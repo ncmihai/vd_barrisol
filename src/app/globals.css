@@ -73,14 +73,14 @@ button {
 .site-header {
   align-items: center;
   backdrop-filter: blur(18px);
-  background: rgb(233 227 223 / 78%);
+  background: rgb(233 227 223 / 84%);
   border-bottom: 1px solid rgb(0 0 0 / 8%);
   display: grid;
-  gap: 1rem;
+  gap: 1.25rem;
   grid-template-columns: auto 1fr auto;
   left: 0;
   min-height: 4.5rem;
-  padding: 0.65rem max(1rem, calc((100vw - var(--max-width)) / 2));
+  padding: 0.55rem max(1rem, calc((100vw - var(--max-width)) / 2));
   position: sticky;
   right: 0;
   top: 0;
@@ -89,20 +89,16 @@ button {
 
 .brand-lockup {
   align-items: center;
-  background: rgb(255 255 255 / 70%);
-  border: 1px solid rgb(0 0 0 / 7%);
-  border-radius: var(--radius);
   display: inline-flex;
-  height: 3rem;
+  height: 3.4rem;
   justify-content: center;
-  padding: 0.3rem 0.55rem;
-  width: 8.5rem;
+  width: 9rem;
 }
 
 .brand-lockup__mark {
   height: auto;
   object-fit: contain;
-  width: 7.4rem;
+  width: 8.8rem;
 }
 
 .site-nav,
@@ -113,7 +109,7 @@ button {
 }
 
 .site-nav {
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .site-nav a,
@@ -166,17 +162,21 @@ button {
 }
 
 .hero-media__image {
+  clip-path: inset(100% 0 0 0);
   object-fit: cover;
   opacity: 0;
-  transform: scale(1.02);
+  transform: scale(1.04);
   transition:
-    opacity 900ms ease,
-    transform 6000ms ease;
+    clip-path 1100ms cubic-bezier(0.76, 0, 0.24, 1),
+    opacity 450ms ease,
+    transform 6500ms ease;
 }
 
 .hero-media__image.is-active {
+  clip-path: inset(0 0 0 0);
   opacity: 1;
   transform: scale(1);
+  z-index: 1;
 }
 
 .hero-overlay {
@@ -326,7 +326,7 @@ button {
 }
 
 .section--intro {
-  padding-top: 3.5rem;
+  padding-top: 4rem;
 }
 
 .intro-grid,
@@ -415,13 +415,29 @@ button {
 }
 
 .section--calculator {
-  background: var(--color-black);
+  background: linear-gradient(180deg, var(--color-black) 0 42%, var(--color-neutral) 42% 100%);
+  color: var(--color-white);
+  padding: 3rem 1rem 4.25rem;
+}
+
+.calculator-layout {
+  align-items: start;
+  display: grid;
+  gap: 1.35rem;
+  grid-template-columns: 0.72fr 1.28fr;
+}
+
+.section--calculator .section-heading {
+  margin: 0;
+  padding-top: 0.65rem;
+}
+
+.section--calculator .section-heading h2 {
   color: var(--color-white);
 }
 
-.section--calculator .section-heading h2,
-.section--calculator .section-heading p {
-  color: var(--color-white);
+.section--calculator .section-heading p:not(.eyebrow) {
+  color: rgb(255 255 255 / 72%);
 }
 
 .section-heading {
@@ -446,14 +462,14 @@ button {
 }
 
 .estimate-tool {
-  background: var(--color-surface);
+  background: var(--color-white);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  box-shadow: 0 28px 70px rgb(0 0 0 / 24%);
   color: var(--color-ink);
   display: grid;
-  gap: 1.25rem;
-  grid-template-columns: 1.1fr 0.85fr;
-  padding: 1rem;
+  gap: 1rem;
+  grid-template-columns: 1fr 0.82fr;
+  padding: 1.1rem;
 }
 
 .estimate-tool__controls,
@@ -480,7 +496,7 @@ button {
 .estimate-tool input,
 .estimate-tool select,
 .estimate-tool textarea {
-  background: var(--color-white);
+  background: var(--color-surface);
   border: 1px solid rgb(0 0 0 / 10%);
   border-radius: 6px;
   color: var(--color-black);
@@ -496,7 +512,9 @@ button {
 
 .estimate-result {
   align-content: start;
-  background: var(--color-blue);
+  background:
+    linear-gradient(180deg, rgb(70 92 136 / 96%), rgb(0 0 0 / 96%)),
+    var(--color-blue);
   border-radius: var(--radius);
   color: var(--color-white);
   display: grid;
@@ -763,8 +781,8 @@ button {
   color: var(--color-white);
   display: grid;
   gap: 2rem;
-  grid-template-columns: 1.2fr 0.8fr 0.8fr;
-  padding: 3rem max(1rem, calc((100vw - var(--max-width)) / 2));
+  grid-template-columns: 1.35fr 0.7fr 0.95fr;
+  padding: 3.25rem max(1rem, calc((100vw - var(--max-width)) / 2));
 }
 
 .site-footer__brand a {
@@ -842,6 +860,7 @@ button {
   .coverage-grid,
   .contact-grid,
   .about-hero-grid,
+  .calculator-layout,
   .estimate-tool,
   .project-grid,
   .value-grid,
@@ -867,21 +886,25 @@ button {
     align-items: start;
     gap: 0.65rem;
     min-height: auto;
+    padding-bottom: 0.75rem;
   }
 
   .brand-lockup {
-    width: 7.4rem;
+    height: 3.2rem;
+    width: 7.8rem;
   }
 
   .brand-lockup__mark {
-    width: 6.4rem;
+    width: 7.7rem;
   }
 
   .header-actions {
+    gap: 0.25rem;
     justify-content: end;
   }
 
   .site-nav {
+    gap: 0.25rem;
     overflow-x: auto;
     padding-bottom: 0.2rem;
   }
@@ -890,7 +913,11 @@ button {
   .locale-link,
   .header-whatsapp {
     font-size: 0.86rem;
-    padding: 0.7rem 0.75rem;
+    padding: 0.68rem 0.72rem;
+  }
+
+  .header-whatsapp {
+    min-width: 6.9rem;
   }
 
   .hero-shell {
@@ -926,8 +953,25 @@ button {
     padding: 3.5rem 1rem;
   }
 
+  .section--calculator {
+    background: linear-gradient(
+      180deg,
+      var(--color-black) 0 32%,
+      var(--color-neutral) 32% 100%
+    );
+    padding: 2.6rem 1rem 3.5rem;
+  }
+
+  .section--calculator .section-heading {
+    padding-top: 0;
+  }
+
   .estimate-tool__controls {
     grid-template-columns: 1fr;
+  }
+
+  .estimate-tool {
+    padding: 0.85rem;
   }
 
   .trust-strip {

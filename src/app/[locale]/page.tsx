@@ -91,6 +91,23 @@ export default async function Home({ params }: PageProps) {
       />
       <HeroCarousel home={data.home} locale={locale} settings={data.settings} />
 
+      <section className="section section--calculator" id="calculator">
+        <div className="section__inner calculator-layout">
+          <div className="section-heading">
+            <p className="eyebrow">
+              {locale === "ro" ? "Calculator" : "Calculator"}
+            </p>
+            <h2>{data.home.calculatorHeadline}</h2>
+            <p>{data.home.calculatorCopy}</p>
+          </div>
+          <EstimateCalculator
+            locale={locale}
+            pricing={data.pricing}
+            whatsappHref={whatsappHref}
+          />
+        </div>
+      </section>
+
       <section className="section section--intro">
         <div className="section__inner intro-grid">
           <div>
@@ -140,23 +157,6 @@ export default async function Home({ params }: PageProps) {
               <span key={city}>{city}</span>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="section section--calculator" id="calculator">
-        <div className="section__inner">
-          <div className="section-heading">
-            <p className="eyebrow">
-              {locale === "ro" ? "Calculator" : "Calculator"}
-            </p>
-            <h2>{data.home.calculatorHeadline}</h2>
-            <p>{data.home.calculatorCopy}</p>
-          </div>
-          <EstimateCalculator
-            locale={locale}
-            pricing={data.pricing}
-            whatsappHref={whatsappHref}
-          />
         </div>
       </section>
 
