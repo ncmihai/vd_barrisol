@@ -21,6 +21,7 @@ const copy = {
     sent: 'Estimate sent.',
     squareMeters: 'Square meters',
     submitError: 'Could not send the estimate. Try WhatsApp or phone.',
+    fallbackContact: 'Contact details',
     whatsapp: 'WhatsApp',
   },
   ro: {
@@ -38,6 +39,7 @@ const copy = {
     sent: 'Estimarea a fost trimisa.',
     squareMeters: 'Metri patrati',
     submitError: 'Estimarea nu a putut fi trimisa. Incearca WhatsApp sau telefon.',
+    fallbackContact: 'Date de contact',
     whatsapp: 'WhatsApp',
   },
 } as const
@@ -192,7 +194,7 @@ export function EstimateCalculator({
         </em>
         <p>{pricing.disclaimer || labels.disclaimer}</p>
         <a className="button button--dark" href={whatsappHref}>
-          {labels.whatsapp}
+          {whatsappHref === '#contact' ? labels.fallbackContact : labels.whatsapp}
         </a>
       </div>
 

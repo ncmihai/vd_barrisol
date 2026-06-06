@@ -646,6 +646,39 @@ button {
   padding: 1.2rem;
 }
 
+.legal-content {
+  display: grid;
+  gap: 1rem;
+  max-width: 52rem;
+}
+
+.legal-content__notice,
+.legal-section {
+  background: var(--color-white);
+  border: 1px solid rgb(0 0 0 / 8%);
+  border-radius: var(--radius);
+  padding: 1.15rem;
+}
+
+.legal-content__notice {
+  color: var(--color-muted);
+  font-weight: 800;
+  margin: 0;
+}
+
+.legal-section h2 {
+  color: var(--color-black);
+  font-size: 1.35rem;
+  line-height: 1.15;
+  margin: 0 0 0.55rem;
+}
+
+.legal-section p {
+  color: var(--color-muted);
+  line-height: 1.7;
+  margin: 0;
+}
+
 .site-footer {
   background: var(--color-black);
   color: var(--color-white);

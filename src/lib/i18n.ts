@@ -35,12 +35,16 @@ export const routeLabels = {
 export const localizedPaths = {
   en: {
     about: '/en/about',
+    cookies: '/en/cookies',
     gallery: '/en/gallery',
     home: '/en',
+    privacy: '/en/privacy',
   },
   ro: {
     about: '/ro/despre',
+    cookies: '/ro/cookies',
     gallery: '/ro/galerie',
     home: '/ro',
+    privacy: '/ro/confidentialitate',
   },
-} satisfies Record<Locale, Record<'about' | 'gallery' | 'home', string>>
+} satisfies Record<Locale, Record<'about' | 'cookies' | 'gallery' | 'home' | 'privacy', string>>

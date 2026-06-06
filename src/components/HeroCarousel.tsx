@@ -63,7 +63,7 @@ export function HeroCarousel({
             {labels.calculator}
           </a>
           <a className="button button--ghost" href={whatsappHref}>
-            WhatsApp
+            {settings.whatsappNumber ? labels.whatsapp : labels.contact}
           </a>
         </div>
       </div>

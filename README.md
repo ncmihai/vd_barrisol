@@ -44,6 +44,10 @@ The public site has fallback content when `DATABASE_URL` is missing. Payload adm
 - `/en/gallery`
 - `/ro/despre`
 - `/en/about`
+- `/ro/confidentialitate`
+- `/en/privacy`
+- `/ro/cookies`
+- `/en/cookies`
 - `/admin`
 
 SEO redirects:
@@ -86,6 +90,13 @@ The active image flow is:
 
 This keeps public URLs controlled by the app so Digi can be replaced by Hetzner later.
 
+## Current Deployment State
+
+- GitHub repo: `https://github.com/ncmihai/vd_barrisol`
+- Temporary site: `https://vdbarrisol.vercel.app`
+- Neon has the committed initial Payload migration applied: `20260606_140813_initial`.
+- Public pages are ready for a private demo, but real owner content is still required before public launch.
+
 ## Vercel Environment Variables
 
 Required for production:
@@ -117,27 +128,38 @@ Notes:
 - Email sending is skipped when `RESEND_API_KEY` or `CONTACT_TO_EMAIL` is missing, but leads still save if the database is configured.
 - `DIGI_STORAGE_MOUNT_ID` can be left empty only if mount auto-discovery works for the Digi account.
 
-## GitHub And Vercel Setup
+## Migration Workflow
 
-1. Create a GitHub repo for `vd_barrisol`.
-2. Push this folder as the repo root, or configure Vercel root directory as `vd_barrisol` if using the larger workspace repo.
-3. Create a Neon Postgres database and copy the pooled connection string.
-4. Add the Neon `DATABASE_URL` to `.env.local`.
-5. Generate and commit the initial Payload migration:
+When the Payload schema changes:
 
 ```bash
-npm run payload migrate:create initial
+npm run payload migrate:create descriptive_name
 npm run generate:types
 npm run generate:importmap
+npm run payload migrate
 ```
 
-6. Add all required env vars in Vercel for Production, Preview, and Development as needed.
-7. Set Vercel build command to `npm run build`.
-8. Set Vercel install command to `npm install`.
-9. Use `https://vdbarrisol.vercel.app` while the real domain is not purchased.
-10. Add `vdbarrisol.ro` after the domain is purchased.
-11. Update `NEXT_PUBLIC_SITE_URL=https://vdbarrisol.ro`.
-12. Point DNS to Vercel.
+Only use `migrate:fresh` on disposable databases. It drops all data.
+
+## CMS Content Checklist
+
+- Create the first admin user at `/admin`.
+- Add real phone, email, and WhatsApp number in `Site Settings`.
+- Confirm the WhatsApp number uses international format without spaces.
+- Add real pricing values in `Pricing Settings`.
+- Confirm VAT wording before public launch.
+- Upload real hero and project images through `Image Assets`.
+- Add at least 4 real projects and approved testimonials.
+- Review `/ro/confidentialitate`, `/en/privacy`, `/ro/cookies`, and `/en/cookies`.
+
+## Domain Launch
+
+1. Purchase `vdbarrisol.ro`.
+2. Add the domain to Vercel.
+3. Update `NEXT_PUBLIC_SITE_URL=https://vdbarrisol.ro`.
+4. Update Payload `Site Settings` domain to `vdbarrisol.ro`.
+5. Point DNS to Vercel.
+6. Redeploy and verify sitemap, canonical URLs, and alternate language links.
 
 ## Before Launch
 
@@ -147,5 +169,4 @@ npm run generate:importmap
 - Confirm real calculator pricing values.
 - Confirm VAT wording.
 - Add real testimonials approved for public use.
-- Add privacy/cookie pages if needed.
-- Generate and commit the first Payload migration after Neon is connected.
+- Have privacy/cookie text reviewed before public launch.

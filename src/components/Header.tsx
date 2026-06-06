@@ -40,7 +40,7 @@ export function Header({
           {labels.localeSwitch}
         </Link>
         <a className="header-whatsapp" href={settings.whatsappNumber ? settings.whatsappHref : '#contact'}>
-          {labels.whatsapp}
+          {settings.whatsappNumber ? labels.whatsapp : labels.contact}
         </a>
       </div>
     </header>

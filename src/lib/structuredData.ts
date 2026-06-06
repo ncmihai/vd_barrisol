@@ -1,5 +1,6 @@
 import type { Locale } from '@/lib/i18n'
 import type { PublicProject, PublicSiteSettings } from '@/lib/publicTypes'
+import { getSiteUrl } from '@/lib/siteUrl'
 
 export const buildProfessionalServiceJsonLd = ({
   locale,
@@ -10,7 +11,7 @@ export const buildProfessionalServiceJsonLd = ({
   projects: PublicProject[]
   settings: PublicSiteSettings
 }) => {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://vdbarrisol.ro'
+  const siteUrl = getSiteUrl()
 
   return {
     '@context': 'https://schema.org',

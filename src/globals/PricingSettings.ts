@@ -193,7 +193,8 @@ export const PricingSettings: GlobalConfig = {
       name: 'disclaimer',
       type: 'textarea',
       localized: true,
-      defaultValue: 'Pretul este aproximativ si poate varia dupa masuratori, material, iluminat si detaliile reale ale montajului.',
+      defaultValue:
+        'Estimarea este aproximativa. Pretul final poate varia dupa masuratori, material, iluminat, acces si detaliile reale ale montajului.',
     },
   ],
 }

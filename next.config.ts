@@ -31,6 +31,16 @@ const nextConfig: NextConfig = {
         permanent: true,
         source: '/en/despre',
       },
+      {
+        destination: '/ro/confidentialitate',
+        permanent: true,
+        source: '/ro/privacy',
+      },
+      {
+        destination: '/en/privacy',
+        permanent: true,
+        source: '/en/confidentialitate',
+      },
     ]
   },
   async headers() {

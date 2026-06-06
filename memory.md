@@ -70,3 +70,12 @@ Last updated: 2026-06-06
 - Public fallback images are generated placeholders in `public/placeholders`.
 - These placeholders are not a substitute for real VD BARRISOL project photos before launch.
 - Local build requires `PAYLOAD_SECRET` even when using fallback content because Payload API routes import the config during production page-data collection.
+- Public pages use polished draft copy for the private demo, but real project photos and testimonials are still required before public launch.
+- Neon was baselined with `20260606_140813_initial` after `migrate:fresh`; do not use dynamic dev schema pushes as the production source of truth.
+
+## Next Demo Requirements
+
+- Create the first Payload admin user in production.
+- Fill `Site Settings` with real phone, email, and WhatsApp number.
+- Replace generated/placeholder images with real VD BARRISOL project photos.
+- Review basic privacy and cookie pages before sharing the site publicly.

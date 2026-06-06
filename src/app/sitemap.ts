@@ -1,8 +1,22 @@
 import type { MetadataRoute } from 'next'
 
+import { getSiteUrl } from '@/lib/siteUrl'
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://vdbarrisol.ro'
-  const routes = ['', '/ro', '/en', '/ro/galerie', '/en/gallery', '/ro/despre', '/en/about']
+  const siteUrl = getSiteUrl()
+  const routes = [
+    '',
+    '/ro',
+    '/en',
+    '/ro/galerie',
+    '/en/gallery',
+    '/ro/despre',
+    '/en/about',
+    '/ro/confidentialitate',
+    '/en/privacy',
+    '/ro/cookies',
+    '/en/cookies',
+  ]
 
   return routes.map((route) => ({
     changeFrequency: 'weekly',

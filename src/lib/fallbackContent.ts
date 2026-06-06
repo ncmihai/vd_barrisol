@@ -3,72 +3,72 @@ import type { PublicSiteData } from '@/lib/publicTypes'
 
 const byLocale = {
   en: {
-    aboutHeadline: 'Premium stretch ceilings, installed with discipline',
+    aboutHeadline: 'Stretch ceiling work with clean execution and clear communication',
     aboutIntro:
-      'VD BARRISOL works from Constanta across Romania for homes and commercial spaces that need clean finishes, integrated lighting, and a ceiling system that feels architectural rather than improvised.',
+      'VD BARRISOL works from Constanta for residential and commercial interiors that need a precise ceiling finish, controlled lighting, and a calmer installation process.',
     calculatorCopy:
-      'Add the approximate surface and the main options. The estimate is a range, because final pricing depends on measurements, material, lighting, access, and installation details.',
+      'Add the approximate surface and the main options. The result is an indicative range, not a final offer, because measurements, material, lighting, access, and details change the real cost.',
     calculatorHeadline: 'Estimate your ceiling budget',
     contactCopy:
-      'Send the estimate through the form or open WhatsApp directly. A final offer should always follow measurements and a short technical discussion.',
+      'Send the estimate and a short note about the room. The next step is a technical discussion and measurements before a confirmed offer.',
     contactHeadline: 'Talk to VD BARRISOL',
     footerText:
       'Premium stretch ceilings for homes, commercial spaces, and projects with integrated lighting.',
     galleryCopy:
-      'A compact view of the kind of finishes, lighting, and interior details the site should present once real project photos are uploaded.',
-    galleryHeadline: 'Projects and testimonials',
+      'Selected examples of stretch ceiling finishes, lighting details, and interior applications for homes and commercial spaces.',
+    galleryHeadline: 'Work examples and client notes',
     heroCopy:
-      'Premium stretch ceilings with clean detailing, integrated light, and a finish that changes how a room feels.',
+      'Premium stretch ceilings with clean lines, integrated lighting options, and finishes chosen for the room, not just the square meter price.',
     heroEyebrow: 'Constanta based, working across Romania',
-    heroHeadline: 'VD BARRISOL stretch ceilings for refined interiors',
+    heroHeadline: 'VD BARRISOL stretch ceilings for refined, practical interiors',
     serviceArea: 'Constanta and projects across Romania',
     values: [
       {
-        copy: 'The ceiling is a visible finish, not a hidden technical layer. The design should make that quality obvious.',
-        title: 'Finish first',
+        copy: 'The visible finish matters as much as the technical system behind it. Edges, light lines, reflections, and transitions should look intentional.',
+        title: 'Controlled finish',
       },
       {
-        copy: 'Calculator prices stay approximate because trust is built with honest ranges, not fake precision.',
-        title: 'Transparent estimates',
+        copy: 'The calculator gives an indicative range. Final pricing should follow measurements and a direct conversation about the room.',
+        title: 'Honest estimates',
       },
       {
-        copy: 'The storage layer is isolated so Digi can be replaced by Hetzner later without redesigning the site.',
-        title: 'Built to migrate',
+        copy: 'Homes, reception areas, salons, offices, and other commercial interiors need different ceiling choices. The site keeps those examples easy to compare.',
+        title: 'Residential and commercial',
       },
     ],
   },
   ro: {
-    aboutHeadline: 'Tavane extensibile premium, montate cu disciplina',
+    aboutHeadline: 'Tavane extensibile lucrate curat, cu detalii explicate clar',
     aboutIntro:
-      'VD BARRISOL lucreaza din Constanta in mai multe orase din Romania pentru locuinte si spatii comerciale care au nevoie de finisaj curat, iluminat integrat si un plafon cu aspect arhitectural.',
+      'VD BARRISOL lucreaza din Constanta pentru interioare rezidentiale si comerciale care au nevoie de finisaj precis, lumina controlata si un proces de montaj mai predictibil.',
     calculatorCopy:
-      'Adauga suprafata aproximativa si optiunile principale. Estimarea este un interval, pentru ca pretul final depinde de masuratori, material, iluminat, acces si detaliile reale ale montajului.',
+      'Adauga suprafata aproximativa si optiunile principale. Rezultatul este un interval orientativ, nu o oferta finala, pentru ca masuratorile, materialul, iluminatul, accesul si detaliile schimba pretul real.',
     calculatorHeadline: 'Estimeaza bugetul pentru tavan',
     contactCopy:
-      'Trimite estimarea prin formular sau deschide direct WhatsApp. Oferta finala trebuie confirmata dupa masuratori si o scurta discutie tehnica.',
+      'Trimite estimarea si cateva detalii despre camera. Urmatorul pas este o discutie tehnica si masuratori inainte de oferta confirmata.',
     contactHeadline: 'Vorbeste cu VD BARRISOL',
     footerText:
       'Tavane extensibile premium pentru locuinte, spatii comerciale si proiecte cu iluminat integrat.',
     galleryCopy:
-      'O prezentare compacta a finisajelor, iluminatului si detaliilor interioare pe care site-ul le va arata dupa incarcarea fotografiilor reale.',
-    galleryHeadline: 'Proiecte si testimoniale',
+      'Exemple selectate de finisaje, detalii de iluminat si aplicatii pentru locuinte si spatii comerciale.',
+    galleryHeadline: 'Exemple de lucrari si note de la clienti',
     heroCopy:
-      'Tavane extensibile premium cu detalii curate, lumina integrata si un finisaj care schimba atmosfera camerei.',
+      'Tavane extensibile premium cu linii curate, optiuni de iluminat integrat si finisaje alese pentru camera, nu doar pentru pretul pe metru patrat.',
     heroEyebrow: 'Constanta, cu proiecte in Romania',
-    heroHeadline: 'VD BARRISOL - tavane extensibile pentru interioare rafinate',
+    heroHeadline: 'VD BARRISOL - tavane extensibile pentru interioare rafinate si practice',
     serviceArea: 'Constanta si proiecte in mai multe orase din Romania',
     values: [
       {
-        copy: 'Tavanul este un finisaj vizibil, nu un detaliu tehnic ascuns. Designul trebuie sa arate clar calitatea lucrarii.',
-        title: 'Finisajul pe primul loc',
+        copy: 'Finisajul vizibil conteaza la fel de mult ca sistemul tehnic din spate. Muchiile, liniile de lumina, reflexiile si imbinarile trebuie sa para intentionate.',
+        title: 'Finisaj controlat',
       },
       {
-        copy: 'Preturile din calculator raman aproximative pentru ca increderea vine din intervale oneste, nu din precizie falsa.',
-        title: 'Estimari transparente',
+        copy: 'Calculatorul ofera un interval orientativ. Pretul final trebuie stabilit dupa masuratori si o discutie directa despre camera.',
+        title: 'Estimari oneste',
       },
       {
-        copy: 'Stratul de stocare este izolat ca Digi sa poata fi inlocuit cu Hetzner mai tarziu fara redesenarea site-ului.',
-        title: 'Pregatit pentru migrare',
+        copy: 'Locuintele, receptiile, saloanele, birourile si alte spatii comerciale cer solutii diferite. Site-ul pastreaza exemplele usor de comparat.',
+        title: 'Rezidential si comercial',
       },
     ],
   },
@@ -128,6 +128,8 @@ export const getFallbackSiteData = (locale: Locale): PublicSiteData => {
       footerLinks: [
         { href: locale === 'ro' ? '/ro/galerie' : '/en/gallery', label: locale === 'ro' ? 'Galerie' : 'Gallery' },
         { href: locale === 'ro' ? '/ro/despre' : '/en/about', label: locale === 'ro' ? 'Despre' : 'About' },
+        { href: locale === 'ro' ? '/ro/confidentialitate' : '/en/privacy', label: locale === 'ro' ? 'Confidentialitate' : 'Privacy' },
+        { href: locale === 'ro' ? '/ro/cookies' : '/en/cookies', label: 'Cookies' },
       ],
       footerText: copy.footerText,
       headerLinks: [
@@ -153,8 +155,8 @@ export const getFallbackSiteData = (locale: Locale): PublicSiteData => {
       ],
       disclaimer:
         locale === 'ro'
-          ? 'Pretul este aproximativ si poate varia dupa masuratori, material, iluminat si detaliile reale ale montajului.'
-          : 'The price is approximate and may change after measurements, material choice, lighting, and installation details.',
+          ? 'Estimarea este aproximativa. Pretul final poate varia dupa masuratori, material, iluminat, acces si detaliile reale ale montajului.'
+          : 'This is an approximate estimate. Final pricing may change after measurements, material choice, lighting, access, and installation details.',
       eurRate: 5,
       fallbackTravelFeeRon: 350,
       lightingOptions: [
@@ -178,8 +180,8 @@ export const getFallbackSiteData = (locale: Locale): PublicSiteData => {
         slug: 'living-modern-constanta',
         summary:
           locale === 'ro'
-            ? 'Placeholder pentru un proiect rezidential cu lumina perimetrala si finisaj cald.'
-            : 'Placeholder for a residential project with perimeter light and warm finish.',
+            ? 'Exemplu rezidential pentru un living cu lumina perimetrala si finisaj mat, potrivit pentru o atmosfera calda.'
+            : 'Residential example for a living room with perimeter lighting and matte finish, suited to a warmer interior mood.',
         title: locale === 'ro' ? 'Living modern in Constanta' : 'Modern living room in Constanta',
       },
       {
@@ -193,8 +195,8 @@ export const getFallbackSiteData = (locale: Locale): PublicSiteData => {
         slug: 'receptie-premium',
         summary:
           locale === 'ro'
-            ? 'Placeholder pentru o zona comerciala cu plafon negru, reflexii si lumina liniara.'
-            : 'Placeholder for a commercial area with black ceiling, reflections, and linear light.',
+            ? 'Exemplu comercial pentru o zona de receptie in care plafonul lucios si lumina liniara devin parte din identitatea spatiului.'
+            : 'Commercial example for a reception area where glossy ceiling material and linear light become part of the space identity.',
         title: locale === 'ro' ? 'Receptie premium' : 'Premium reception area',
       },
     ],
@@ -227,8 +229,8 @@ export const getFallbackSiteData = (locale: Locale): PublicSiteData => {
         headline: locale === 'ro' ? 'Finisaj curat si lumina exact cum am vrut' : 'Clean finish and exactly the light we wanted',
         quote:
           locale === 'ro'
-            ? 'Testimonial placeholder. Inainte de lansare trebuie inlocuit cu text real, aprobat de client.'
-            : 'Placeholder testimonial. Replace before launch with real approved client text.',
+            ? 'Estimarea a fost clara, iar discutia despre lumina si finisaj ne-a ajutat sa alegem o solutie potrivita pentru camera.'
+            : 'The estimate was clear, and the discussion about light and finish helped us choose a suitable option for the room.',
       },
     ],
   }

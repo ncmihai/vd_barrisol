@@ -47,6 +47,12 @@ export const NavigationFooter: GlobalConfig = {
     {
       name: 'footerLinks',
       type: 'array',
+      defaultValue: [
+        { label: 'Galerie', href: '/ro/galerie' },
+        { label: 'Despre', href: '/ro/despre' },
+        { label: 'Confidentialitate', href: '/ro/confidentialitate' },
+        { label: 'Cookies', href: '/ro/cookies' },
+      ],
       fields: [
         {
           name: 'label',
@@ -70,7 +76,8 @@ export const NavigationFooter: GlobalConfig = {
       name: 'footerText',
       type: 'textarea',
       localized: true,
-      defaultValue: 'Tavane extensibile premium pentru locuinte, spatii comerciale si proiecte cu iluminat integrat.',
+      defaultValue:
+        'Tavane extensibile premium pentru locuinte, spatii comerciale si proiecte cu iluminat integrat.',
     },
     {
       name: 'creditLabel',

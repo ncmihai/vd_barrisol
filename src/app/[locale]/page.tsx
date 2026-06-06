@@ -75,8 +75,8 @@ export default async function Home({ params }: PageProps) {
           </div>
           <p>
             {locale === 'ro'
-              ? 'Site-ul este construit ca administrarea continutului sa ramana simpla: imagini, proiecte, testimoniale, preturi si date de contact se modifica din Payload.'
-              : 'The site is built so content management stays simple: images, projects, testimonials, prices, and contact details are edited from Payload.'}
+              ? 'Fiecare proiect incepe cu masuratori clare, alegerea finisajului potrivit si o discutie despre lumina, acces si detaliile de montaj.'
+              : 'Every project starts with clear measurements, the right finish, and a practical discussion about light, access, and installation details.'}
           </p>
         </div>
       </section>
@@ -118,7 +118,7 @@ export default async function Home({ params }: PageProps) {
             {data.settings.phone && <a href={`tel:${data.settings.phone.replace(/\s+/g, '')}`}>{data.settings.phone}</a>}
             {data.settings.email && <a href={`mailto:${data.settings.email}`}>{data.settings.email}</a>}
             <a className="button button--primary" href={whatsappHref}>
-              WhatsApp
+              {data.settings.whatsappNumber ? 'WhatsApp' : locale === 'ro' ? 'Date de contact' : 'Contact details'}
             </a>
           </div>
         </div>

@@ -4,7 +4,7 @@ Last updated: 2026-06-06
 
 ## Current Stage
 
-Planning and architecture. No website implementation yet.
+Private content demo. The website is implemented, deployed on Vercel, and backed by Neon with an initial Payload migration baseline.
 
 ## Decisions Made
 
@@ -29,11 +29,11 @@ Planning and architecture. No website implementation yet.
 - [ ] Define actual base pricing values.
 - [ ] Define calculator options: material, lighting, complexity, perimeter, transport, minimum price.
 - [ ] Confirm EUR conversion strategy: fixed editable rate or manually configured EUR prices.
-- [ ] Confirm email provider for lead notifications.
+- [x] Confirm email provider for lead notifications.
 - [ ] Confirm final domain purchase and DNS ownership.
 - [ ] Confirm whether project detail pages are needed now or later.
-- [ ] Confirm if legal pages are needed at launch: privacy, cookies, terms.
-- [ ] Generate initial Payload migration after Neon `DATABASE_URL` is available.
+- [x] Confirm if legal pages are needed at launch: privacy, cookies.
+- [x] Generate initial Payload migration after Neon `DATABASE_URL` is available.
 
 ## Planning Tasks
 
@@ -43,7 +43,6 @@ Planning and architecture. No website implementation yet.
 - [x] Create `architecture.md`.
 - [x] Create `task.md`.
 - [x] Create `inspiration.md`.
-- [ ] Review Mereya implementation pieces to reuse before scaffolding.
 - [x] Review Mereya implementation pieces to reuse before scaffolding.
 - [x] Finalize initial CMS model.
 - [x] Finalize initial calculator formula.
@@ -69,12 +68,30 @@ Planning and architecture. No website implementation yet.
 - [x] Add sitemap and robots.
 - [x] Add JSON-LD.
 - [x] Add Vercel deployment configuration.
+- [x] Add basic bilingual privacy and cookie pages.
+- [x] Generate and apply initial Payload migration to Neon.
+- [x] Replace public-facing fallback placeholder copy with private-demo draft copy.
+
+## CMS Content Checklist
+
+- [ ] Create first admin user at `/admin`.
+- [ ] Add real public phone number.
+- [ ] Add real public email.
+- [ ] Add real WhatsApp number in international format, e.g. `407XXXXXXXX`.
+- [ ] Upload final logo file when available.
+- [ ] Upload real hero photos.
+- [ ] Add at least 4 real projects with city, area, ceiling type, summary, and photos.
+- [ ] Add real testimonials approved for public use.
+- [ ] Confirm pricing values: base RON/mp, minimum price, lighting options, complexity multipliers, travel fees.
+- [ ] Confirm VAT wording and calculator disclaimer.
+- [ ] Review privacy/cookie pages before public launch.
 
 ## Verification
 
 - [x] `npm run test:int`
 - [x] `npm run lint`
 - [x] `PAYLOAD_SECRET=local-build-secret npm run build`
+- [x] `npm run payload migrate:status`
 
 ## Quality Bar
 
