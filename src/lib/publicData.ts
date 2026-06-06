@@ -1,6 +1,3 @@
-import config from '@payload-config'
-import { getPayload } from 'payload'
-
 import { getFallbackSiteData } from '@/lib/fallbackContent'
 import type { Locale } from '@/lib/i18n'
 import type {
@@ -74,14 +71,23 @@ const whatsappHref = (number?: unknown) => {
 const nonEmptyString = (value: unknown, fallback: string) =>
   typeof value === 'string' && value.trim() ? value.trim() : fallback
 
+const shouldUseFallbackContent = () =>
+  !process.env.DATABASE_URL ||
+  process.env.NEXT_PHASE === 'phase-production-build' ||
+  process.env.VDB_FORCE_STATIC_FALLBACK === '1'
+
 export const getPublicSiteData = async (locale: Locale): Promise<PublicSiteData> => {
   const fallback = getFallbackSiteData(locale)
 
-  if (!process.env.DATABASE_URL) {
+  if (shouldUseFallbackContent()) {
     return fallback
   }
 
   try {
+    const [{ default: config }, { getPayload }] = await Promise.all([
+      import('@payload-config'),
+      import('payload'),
+    ])
     const payload = await getPayload({ config })
     const [siteSettings, navigationFooter, homePage, galleryPage, aboutPage, pricingSettings, projects, testimonials] =
       await Promise.all([
@@ -107,16 +113,16 @@ export const getPublicSiteData = async (locale: Locale): Promise<PublicSiteData>
         }),
       ])
 
-    const settings = mapSiteSettings(siteSettings as AnyRecord, fallback.settings)
-    const nav = mapNavigation(navigationFooter as AnyRecord, fallback.nav)
-    const home = mapHomePage(homePage as AnyRecord, fallback.home)
-    const gallery = mapGalleryPage(galleryPage as AnyRecord, fallback.gallery)
-    const about = mapAboutPage(aboutPage as AnyRecord, fallback.about)
+    const settings = mapSiteSettings(asRecord(siteSettings), fallback.settings)
+    const nav = mapNavigation(asRecord(navigationFooter), fallback.nav)
+    const home = mapHomePage(asRecord(homePage), fallback.home)
+    const gallery = mapGalleryPage(asRecord(galleryPage), fallback.gallery)
+    const about = mapAboutPage(asRecord(aboutPage), fallback.about)
     const mappedProjects = projects.docs.map((project) =>
-      mapProject(project as AnyRecord, fallback.projects[0]),
+      mapProject(asRecord(project), fallback.projects[0]),
     )
     const mappedTestimonials = testimonials.docs.map((testimonial) =>
-      mapTestimonial(testimonial as AnyRecord, fallback.testimonials[0]),
+      mapTestimonial(asRecord(testimonial), fallback.testimonials[0]),
     )
 
     return {
@@ -126,7 +132,7 @@ export const getPublicSiteData = async (locale: Locale): Promise<PublicSiteData>
       nav,
       pricing: {
         ...fallback.pricing,
-        ...(pricingSettings as AnyRecord),
+        ...asRecord(pricingSettings),
       },
       projects: mappedProjects.length > 0 ? mappedProjects : fallback.projects,
       settings,

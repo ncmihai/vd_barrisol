@@ -3,12 +3,35 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { getPayload } from 'payload'
 
 import { sendLeadNotification } from '@/lib/leadNotifications'
+import type { Lead } from '@/payload-types'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
+type LeadJsonValue = Exclude<Lead['calculatorInput'], undefined>
+
 const errorResponse = (message: string, status = 400) =>
   NextResponse.json({ error: message }, { status })
+
+const toLeadJsonValue = (value: unknown): LeadJsonValue => {
+  if (value === null || value === undefined) {
+    return null
+  }
+
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+    return value
+  }
+
+  if (Array.isArray(value)) {
+    return value
+  }
+
+  if (typeof value === 'object') {
+    return value as Record<string, unknown>
+  }
+
+  return null
+}
 
 export async function POST(request: NextRequest) {
   const payload = await getPayload({ config })
@@ -41,7 +64,7 @@ export async function POST(request: NextRequest) {
   const lead = await payload.create({
     collection: 'leads',
     data: {
-      calculatorInput: body.calculatorInput || null,
+      calculatorInput: toLeadJsonValue(body.calculatorInput),
       city: String(body.city || '').trim(),
       email: String(body.email || '').trim(),
       estimateEurMax: Number(body.estimateEurMax) || 0,
@@ -53,7 +76,7 @@ export async function POST(request: NextRequest) {
       name,
       phone,
       preferredContact: body.preferredContact || 'whatsapp',
-      pricingSnapshot: body.pricingSnapshot || null,
+      pricingSnapshot: toLeadJsonValue(body.pricingSnapshot),
       source: 'website-calculator',
     },
     overrideAccess: true,
