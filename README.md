@@ -103,6 +103,10 @@ Required for production:
 
 ```bash
 DATABASE_URL=
+# Optional aliases accepted by the app if `DATABASE_URL` is not present:
+POSTGRES_URL=
+POSTGRES_PRISMA_URL=
+POSTGRES_URL_NON_POOLING=
 PAYLOAD_SECRET=
 NEXT_PUBLIC_SITE_URL=https://vdbarrisol.vercel.app
 
@@ -124,7 +128,7 @@ PUBLIC_DATA_TIMEOUT_MS=8000
 Notes:
 
 - `PAYLOAD_SECRET` must be a long random string.
-- Use the Neon pooled connection string for `DATABASE_URL`.
+- Use the Neon pooled connection string for `DATABASE_URL`. The app also accepts `POSTGRES_URL`, `POSTGRES_PRISMA_URL`, or `POSTGRES_URL_NON_POOLING`, but `DATABASE_URL` is the preferred name.
 - Email sending is skipped when `RESEND_API_KEY` or `CONTACT_TO_EMAIL` is missing, but leads still save if the database is configured.
 - `DIGI_STORAGE_MOUNT_ID` can be left empty only if mount auto-discovery works for the Digi account.
 

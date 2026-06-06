@@ -16,11 +16,13 @@ import { HomePage } from '@/globals/HomePage'
 import { NavigationFooter } from '@/globals/NavigationFooter'
 import { PricingSettings } from '@/globals/PricingSettings'
 import { SiteSettings } from '@/globals/SiteSettings'
+import { getDatabaseUrl, requireDatabaseUrl } from '@/lib/databaseUrl'
 import { migrations } from '@/migrations'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const payloadSecret = process.env.PAYLOAD_SECRET
+const databaseUrl = process.env.NODE_ENV === 'production' ? requireDatabaseUrl() : getDatabaseUrl()
 
 if (!payloadSecret && process.env.NODE_ENV === 'production') {
   throw new Error('PAYLOAD_SECRET is required in production.')
@@ -43,7 +45,7 @@ export default buildConfig({
   db: postgresAdapter({
     prodMigrations: migrations,
     pool: {
-      connectionString: process.env.DATABASE_URL || '',
+      connectionString: databaseUrl,
       connectionTimeoutMillis: Number.parseInt(process.env.POSTGRES_CONNECT_TIMEOUT_MS || '7000', 10),
     },
   }),

@@ -71,6 +71,7 @@ Private content demo. The website is implemented, deployed on Vercel, and backed
 - [x] Add basic bilingual privacy and cookie pages.
 - [x] Generate and apply initial Payload migration to Neon.
 - [x] Replace public-facing fallback placeholder copy with private-demo draft copy.
+- [x] Support common Neon/Vercel Postgres env aliases for Payload runtime.
 
 ## CMS Content Checklist
 

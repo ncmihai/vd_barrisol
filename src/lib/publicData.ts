@@ -1,5 +1,6 @@
 import { getFallbackSiteData } from '@/lib/fallbackContent'
 import type { Locale } from '@/lib/i18n'
+import { getDatabaseUrl } from '@/lib/databaseUrl'
 import type {
   PublicAboutPage,
   PublicGalleryPage,
@@ -72,7 +73,7 @@ const nonEmptyString = (value: unknown, fallback: string) =>
   typeof value === 'string' && value.trim() ? value.trim() : fallback
 
 const shouldUseFallbackContent = () =>
-  !process.env.DATABASE_URL ||
+  !getDatabaseUrl() ||
   process.env.NEXT_PHASE === 'phase-production-build' ||
   process.env.VDB_FORCE_STATIC_FALLBACK === '1'
 
