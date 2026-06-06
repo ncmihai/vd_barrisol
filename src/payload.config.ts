@@ -22,7 +22,9 @@ import { migrations } from '@/migrations'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const payloadSecret = process.env.PAYLOAD_SECRET
-const databaseUrl = process.env.NODE_ENV === 'production' ? requireDatabaseUrl() : getDatabaseUrl()
+const isProductionBuild = process.env.NEXT_PHASE === 'phase-production-build'
+const databaseUrl =
+  process.env.NODE_ENV === 'production' && !isProductionBuild ? requireDatabaseUrl() : getDatabaseUrl()
 
 if (!payloadSecret && process.env.NODE_ENV === 'production') {
   throw new Error('PAYLOAD_SECRET is required in production.')
