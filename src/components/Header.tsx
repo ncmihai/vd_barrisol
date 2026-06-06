@@ -40,15 +40,15 @@ export function Header({
         ))}
       </nav>
       <div className="header-actions">
-        <Link className="locale-link" href={labels.localeSwitchPath}>
-          {labels.localeSwitch}
-        </Link>
         <a
           className="header-whatsapp"
           href={settings.whatsappNumber ? settings.whatsappHref : "#contact"}
         >
           {settings.whatsappNumber ? labels.bookMeasurement : labels.contact}
         </a>
+        <Link className="locale-link" href={labels.localeSwitchPath}>
+          {labels.localeSwitch}
+        </Link>
       </div>
     </header>
   );

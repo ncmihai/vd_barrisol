@@ -162,20 +162,17 @@ button {
 }
 
 .hero-media__image {
-  clip-path: inset(100% 0 0 0);
   object-fit: cover;
   opacity: 0;
-  transform: scale(1.04);
+  transform: translateY(1.5rem) scale(1.04);
   transition:
-    clip-path 1100ms cubic-bezier(0.76, 0, 0.24, 1),
-    opacity 450ms ease,
+    opacity 900ms ease,
     transform 6500ms ease;
 }
 
 .hero-media__image.is-active {
-  clip-path: inset(0 0 0 0);
   opacity: 1;
-  transform: scale(1);
+  transform: translateY(0) scale(1);
   z-index: 1;
 }
 
@@ -282,11 +279,11 @@ button {
 }
 
 .hero-caption {
-  align-items: center;
+  align-items: end;
   bottom: 2rem;
-  display: flex;
+  display: grid;
   gap: 1rem;
-  justify-content: space-between;
+  grid-template-columns: 1fr auto;
   left: max(1rem, calc((100vw - var(--max-width)) / 2));
   position: absolute;
   right: max(1rem, calc((100vw - var(--max-width)) / 2));
@@ -300,15 +297,16 @@ button {
 
 .hero-dots {
   display: flex;
+  flex-direction: column;
   gap: 0.4rem;
 }
 
 .hero-dots button {
   background: rgb(255 255 255 / 42%);
   border-radius: 999px;
-  height: 0.45rem;
+  height: 1.5rem;
   padding: 0;
-  width: 1.5rem;
+  width: 0.45rem;
 }
 
 .hero-dots button.is-active {
@@ -841,16 +839,6 @@ button {
 }
 
 @media (max-width: 900px) {
-  .site-header {
-    grid-template-columns: 1fr auto;
-  }
-
-  .site-nav {
-    grid-column: 1 / -1;
-    justify-content: flex-start;
-    order: 3;
-  }
-
   .hero-content h1,
   .page-hero h1 {
     font-size: 3.1rem;
@@ -878,6 +866,18 @@ button {
 
   .trust-strip__inner {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .site-header {
+    grid-template-columns: 1fr auto;
+  }
+
+  .site-nav {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+    order: 3;
   }
 }
 
@@ -940,8 +940,7 @@ button {
   }
 
   .hero-caption {
-    align-items: flex-start;
-    flex-direction: column;
+    align-items: end;
   }
 
   .hero-caption span {

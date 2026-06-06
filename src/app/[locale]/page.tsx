@@ -111,7 +111,6 @@ export default async function Home({ params }: PageProps) {
       <section className="section section--intro">
         <div className="section__inner intro-grid">
           <div>
-            <p className="eyebrow">{data.settings.serviceArea}</p>
             <h2>
               {locale === "ro"
                 ? "Finisaj curat. Lumina integrata. Montaj precis."
@@ -177,37 +176,6 @@ export default async function Home({ params }: PageProps) {
             </a>
           </div>
           <ProjectGrid projects={data.projects.slice(0, 2)} />
-        </div>
-      </section>
-
-      <section className="section section--contact" id="contact">
-        <div className="section__inner contact-grid">
-          <div>
-            <p className="eyebrow">{locale === "ro" ? "Contact" : "Contact"}</p>
-            <h2>{data.home.contactHeadline}</h2>
-            <p>{data.home.contactCopy}</p>
-          </div>
-          <div className="contact-panel">
-            {data.settings.phone && (
-              <a href={`tel:${data.settings.phone.replace(/\s+/g, "")}`}>
-                {data.settings.phone}
-              </a>
-            )}
-            {data.settings.email && (
-              <a href={`mailto:${data.settings.email}`}>
-                {data.settings.email}
-              </a>
-            )}
-            <a className="button button--primary" href={whatsappHref}>
-              {data.settings.whatsappNumber
-                ? locale === "ro"
-                  ? "Programeaza o masuratoare"
-                  : "Book a measurement"
-                : locale === "ro"
-                  ? "Date de contact"
-                  : "Contact details"}
-            </a>
-          </div>
         </div>
       </section>
 
