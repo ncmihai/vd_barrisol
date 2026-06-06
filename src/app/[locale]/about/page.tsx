@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 
-import { isLocale, type Locale } from '@/lib/i18n'
+import { type Locale } from '@/lib/i18n'
 import { getPublicSiteData } from '@/lib/publicData'
 
 export const revalidate = 300
@@ -13,14 +13,18 @@ type PageProps = {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale: rawLocale } = await params
-  const locale = isLocale(rawLocale) ? rawLocale : 'ro'
+  if (rawLocale !== 'en') {
+    notFound()
+  }
+
+  const locale = rawLocale
   const data = await getPublicSiteData(locale)
   const title = data.about.seoTitle || data.about.headline
   const description = data.about.seoDescription || data.about.intro
 
   return {
     alternates: {
-      canonical: locale === 'ro' ? '/ro/despre' : '/en/about',
+      canonical: '/en/about',
       languages: {
         en: '/en/about',
         ro: '/ro/despre',
@@ -34,7 +38,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function AboutPage({ params }: PageProps) {
   const { locale: rawLocale } = await params
 
-  if (!isLocale(rawLocale)) {
+  if (rawLocale !== 'en') {
     notFound()
   }
 

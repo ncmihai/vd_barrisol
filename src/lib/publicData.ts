@@ -1,5 +1,5 @@
 import { getFallbackSiteData } from '@/lib/fallbackContent'
-import type { Locale } from '@/lib/i18n'
+import { localizedPaths, type Locale } from '@/lib/i18n'
 import { getDatabaseUrl } from '@/lib/databaseUrl'
 import type {
   PublicAboutPage,
@@ -14,6 +14,7 @@ import type {
 } from '@/lib/publicTypes'
 
 type AnyRecord = Record<string, unknown>
+type LocalizedPathKey = keyof (typeof localizedPaths)['ro']
 
 const asRecord = (value: unknown): AnyRecord =>
   value && typeof value === 'object' ? (value as AnyRecord) : {}
@@ -72,6 +73,22 @@ const whatsappHref = (number?: unknown) => {
 const nonEmptyString = (value: unknown, fallback: string) =>
   typeof value === 'string' && value.trim() ? value.trim() : fallback
 
+const internalRouteKeysBySlug = new Map<string, LocalizedPathKey>(
+  Object.values(localizedPaths).flatMap((paths) =>
+    Object.entries(paths).map(([key, href]) => [href, key as LocalizedPathKey] as const),
+  ),
+)
+
+const localizeInternalHref = (href: string, locale: Locale) => {
+  const routeKey = internalRouteKeysBySlug.get(href)
+
+  if (!routeKey) {
+    return href
+  }
+
+  return localizedPaths[locale][routeKey]
+}
+
 const shouldUseFallbackContent = () =>
   !getDatabaseUrl() ||
   process.env.NEXT_PHASE === 'phase-production-build' ||
@@ -115,7 +132,7 @@ export const getPublicSiteData = async (locale: Locale): Promise<PublicSiteData>
       ])
 
     const settings = mapSiteSettings(asRecord(siteSettings), fallback.settings)
-    const nav = mapNavigation(asRecord(navigationFooter), fallback.nav)
+    const nav = mapNavigation(asRecord(navigationFooter), fallback.nav, locale)
     const home = mapHomePage(asRecord(homePage), fallback.home)
     const gallery = mapGalleryPage(asRecord(galleryPage), fallback.gallery)
     const about = mapAboutPage(asRecord(aboutPage), fallback.about)
@@ -164,13 +181,13 @@ const mapSiteSettings = (doc: AnyRecord, fallback: PublicSiteSettings): PublicSi
   }
 }
 
-const mapNavigation = (doc: AnyRecord, fallback: PublicNav): PublicNav => ({
+const mapNavigation = (doc: AnyRecord, fallback: PublicNav, locale: Locale): PublicNav => ({
   creditHref: nonEmptyString(doc.creditHref, fallback.creditHref || ''),
   creditLabel: nonEmptyString(doc.creditLabel, fallback.creditLabel),
   footerLinks:
     Array.isArray(doc.footerLinks) && doc.footerLinks.length > 0
       ? doc.footerLinks.map((link: AnyRecord) => ({
-          href: nonEmptyString(link.href, '#'),
+          href: localizeInternalHref(nonEmptyString(link.href, '#'), locale),
           label: nonEmptyString(link.label, 'Link'),
           newTab: Boolean(link.newTab),
         }))
@@ -179,7 +196,7 @@ const mapNavigation = (doc: AnyRecord, fallback: PublicNav): PublicNav => ({
   headerLinks:
     Array.isArray(doc.headerLinks) && doc.headerLinks.length > 0
       ? doc.headerLinks.map((link: AnyRecord) => ({
-          href: nonEmptyString(link.href, '#'),
+          href: localizeInternalHref(nonEmptyString(link.href, '#'), locale),
           label: nonEmptyString(link.label, 'Link'),
         }))
       : fallback.headerLinks,
