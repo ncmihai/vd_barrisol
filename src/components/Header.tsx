@@ -32,23 +32,25 @@ export function Header({
           width={180}
         />
       </Link>
-      <nav aria-label="Primary navigation" className="site-nav">
-        {nav.headerLinks.map((link) => (
-          <Link href={link.href} key={`${link.href}-${link.label}`}>
-            {link.label}
+      <div className="header-menu">
+        <nav aria-label="Primary navigation" className="site-nav">
+          {nav.headerLinks.map((link) => (
+            <Link href={link.href} key={`${link.href}-${link.label}`}>
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+        <div className="header-actions">
+          <a
+            className="header-whatsapp"
+            href={settings.whatsappNumber ? settings.whatsappHref : "#contact"}
+          >
+            {settings.whatsappNumber ? labels.bookMeasurement : labels.contact}
+          </a>
+          <Link className="locale-link" href={labels.localeSwitchPath}>
+            {labels.localeSwitch}
           </Link>
-        ))}
-      </nav>
-      <div className="header-actions">
-        <a
-          className="header-whatsapp"
-          href={settings.whatsappNumber ? settings.whatsappHref : "#contact"}
-        >
-          {settings.whatsappNumber ? labels.bookMeasurement : labels.contact}
-        </a>
-        <Link className="locale-link" href={labels.localeSwitchPath}>
-          {labels.localeSwitch}
-        </Link>
+        </div>
       </div>
     </header>
   );
