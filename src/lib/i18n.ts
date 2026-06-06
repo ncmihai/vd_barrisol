@@ -1,50 +1,56 @@
-export const locales = ['ro', 'en'] as const
+export const locales = ["ro", "en"] as const;
 
-export type Locale = (typeof locales)[number]
+export type Locale = (typeof locales)[number];
 
-export const defaultLocale: Locale = 'ro'
+export const defaultLocale: Locale = "ro";
 
-export const isLocale = (value: string): value is Locale => locales.includes(value as Locale)
+export const isLocale = (value: string): value is Locale =>
+  locales.includes(value as Locale);
 
 export const normalizeLocale = (value?: string): Locale =>
-  value && isLocale(value) ? value : defaultLocale
+  value && isLocale(value) ? value : defaultLocale;
 
 export const routeLabels = {
   en: {
-    about: 'About',
-    calculator: 'Estimate',
-    contact: 'Contact',
-    gallery: 'Gallery',
-    home: 'Home',
-    localeSwitch: 'Romana',
-    localeSwitchPath: '/ro',
-    whatsapp: 'WhatsApp',
+    about: "About",
+    bookMeasurement: "Book",
+    calculator: "Estimate",
+    contact: "Contact",
+    gallery: "Gallery",
+    home: "Home",
+    localeSwitch: "Romana",
+    localeSwitchPath: "/ro",
+    whatsapp: "WhatsApp",
   },
   ro: {
-    about: 'Despre',
-    calculator: 'Estimare',
-    contact: 'Contact',
-    gallery: 'Galerie',
-    home: 'Acasa',
-    localeSwitch: 'English',
-    localeSwitchPath: '/en',
-    whatsapp: 'WhatsApp',
+    about: "Despre",
+    bookMeasurement: "Programeaza",
+    calculator: "Estimare",
+    contact: "Contact",
+    gallery: "Galerie",
+    home: "Acasa",
+    localeSwitch: "English",
+    localeSwitchPath: "/en",
+    whatsapp: "WhatsApp",
   },
-} satisfies Record<Locale, Record<string, string>>
+} satisfies Record<Locale, Record<string, string>>;
 
 export const localizedPaths = {
   en: {
-    about: '/en/about',
-    cookies: '/en/cookies',
-    gallery: '/en/gallery',
-    home: '/en',
-    privacy: '/en/privacy',
+    about: "/en/about",
+    cookies: "/en/cookies",
+    gallery: "/en/gallery",
+    home: "/en",
+    privacy: "/en/privacy",
   },
   ro: {
-    about: '/ro/despre',
-    cookies: '/ro/cookies',
-    gallery: '/ro/galerie',
-    home: '/ro',
-    privacy: '/ro/confidentialitate',
+    about: "/ro/despre",
+    cookies: "/ro/cookies",
+    gallery: "/ro/galerie",
+    home: "/ro",
+    privacy: "/ro/confidentialitate",
   },
-} satisfies Record<Locale, Record<'about' | 'cookies' | 'gallery' | 'home' | 'privacy', string>>
+} satisfies Record<
+  Locale,
+  Record<"about" | "cookies" | "gallery" | "home" | "privacy", string>
+>;

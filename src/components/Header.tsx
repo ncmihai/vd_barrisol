@@ -1,24 +1,28 @@
-import Image from 'next/image'
-import Link from 'next/link'
+import Image from "next/image";
+import Link from "next/link";
 
-import type { Locale } from '@/lib/i18n'
-import { localizedPaths, routeLabels } from '@/lib/i18n'
-import type { PublicNav, PublicSiteSettings } from '@/lib/publicTypes'
+import type { Locale } from "@/lib/i18n";
+import { localizedPaths, routeLabels } from "@/lib/i18n";
+import type { PublicNav, PublicSiteSettings } from "@/lib/publicTypes";
 
 export function Header({
   locale,
   nav,
   settings,
 }: {
-  locale: Locale
-  nav: PublicNav
-  settings: PublicSiteSettings
+  locale: Locale;
+  nav: PublicNav;
+  settings: PublicSiteSettings;
 }) {
-  const labels = routeLabels[locale]
+  const labels = routeLabels[locale];
 
   return (
     <header className="site-header">
-      <Link aria-label={settings.brandName} className="brand-lockup" href={localizedPaths[locale].home}>
+      <Link
+        aria-label={settings.brandName}
+        className="brand-lockup"
+        href={localizedPaths[locale].home}
+      >
         <Image
           alt={settings.logo.alt}
           className="brand-lockup__mark"
@@ -39,10 +43,13 @@ export function Header({
         <Link className="locale-link" href={labels.localeSwitchPath}>
           {labels.localeSwitch}
         </Link>
-        <a className="header-whatsapp" href={settings.whatsappNumber ? settings.whatsappHref : '#contact'}>
-          {settings.whatsappNumber ? labels.whatsapp : labels.contact}
+        <a
+          className="header-whatsapp"
+          href={settings.whatsappNumber ? settings.whatsappHref : "#contact"}
+        >
+          {settings.whatsappNumber ? labels.bookMeasurement : labels.contact}
         </a>
       </div>
     </header>
-  )
+  );
 }

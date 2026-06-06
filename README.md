@@ -1,6 +1,6 @@
 # VD BARRISOL
 
-Next.js + Payload CMS website for VD BARRISOL, a premium stretch ceiling company based in Constanta and working across Romania.
+Next.js + Payload CMS website for VD BARRISOL, a premium stretch ceiling company based in Constanta and nearby localities.
 
 - Temporary Vercel domain: `https://vdbarrisol.vercel.app`
 - Intended production domain: `https://vdbarrisol.ro`
@@ -61,7 +61,7 @@ SEO redirects:
 
 Globals:
 
-- `Site Settings`: brand, domain, contact, WhatsApp, logo, palette, SEO.
+- `Site Settings`: brand, domain, contact, WhatsApp, Facebook, Instagram, company details, service cities, logo, palette, SEO.
 - `Navigation & Footer`: header links, footer links, footer copy, credit.
 - `Home Page`: hero slides, calculator intro, contact intro, SEO.
 - `Gallery Page`: gallery intro and SEO.
@@ -94,7 +94,9 @@ This keeps public URLs controlled by the app so Digi can be replaced by Hetzner 
 
 - GitHub repo: `https://github.com/ncmihai/vd_barrisol`
 - Temporary site: `https://vdbarrisol.vercel.app`
-- Neon has the committed initial Payload migration applied: `20260606_140813_initial`.
+- Neon has the committed Payload migrations applied:
+  - `20260606_140813_initial`
+  - `20260606_153216_add_company_contact_fields`
 - Public pages are ready for a private demo, but real owner content is still required before public launch.
 
 ## Vercel Environment Variables
@@ -148,8 +150,13 @@ Only use `migrate:fresh` on disposable databases. It drops all data.
 ## CMS Content Checklist
 
 - Create the first admin user at `/admin`.
-- Add real phone, email, and WhatsApp number in `Site Settings`.
-- Confirm the WhatsApp number uses international format without spaces.
+- Confirm current public phone: `0793 124 425`.
+- Confirm current public email: `vdbarrisol@gmail.com`.
+- Confirm current WhatsApp number: `40793124425`.
+- Confirm Facebook URL: `https://www.facebook.com/p/VD-Barrisol-61564327003788/`.
+- Confirm Instagram URL: `https://www.instagram.com/vd_barrisol/`.
+- Confirm service cities: Mamaia-Sat, Valu lui Traian, Constanta, Mamaia, Cumpana, Navodari, Agigea, Lazu, Mangalia, Murfatlar.
+- Confirm whether `VD BARRISOL S.R.L.` and `CUI 51496619` should remain visible in the footer/legal context.
 - Add real pricing values in `Pricing Settings`.
 - Confirm VAT wording before public launch.
 - Upload real hero and project images through `Image Assets`.
@@ -169,7 +176,7 @@ Only use `migrate:fresh` on disposable databases. It drops all data.
 
 - Replace placeholder images with real VD BARRISOL project photos.
 - Replace the planning logo with an approved SVG, PDF, AI, EPS, or high-resolution transparent PNG.
-- Confirm real phone, email, and WhatsApp number in Payload.
+- Confirm real phone, email, WhatsApp, Facebook, Instagram, company details, and service cities in Payload.
 - Confirm real calculator pricing values.
 - Confirm VAT wording.
 - Add real testimonials approved for public use.

@@ -4,7 +4,7 @@ Last updated: 2026-06-06
 
 ## Current Stage
 
-Private content demo. The website is implemented, deployed on Vercel, and backed by Neon with an initial Payload migration baseline.
+Private content demo. The website is implemented, deployed on Vercel, backed by Neon, and now has real public contact/social/location details seeded in Payload.
 
 ## Decisions Made
 
@@ -18,6 +18,12 @@ Private content demo. The website is implemented, deployed on Vercel, and backed
 - [x] Pricing calculator rules must be editable from Payload.
 - [x] Contact submissions should both save in Payload and send email.
 - [x] WhatsApp direct CTA is required.
+- [x] Public phone is `0793 124 425`.
+- [x] Public email is `vdbarrisol@gmail.com`.
+- [x] WhatsApp number is `40793124425`.
+- [x] Facebook page is `https://www.facebook.com/p/VD-Barrisol-61564327003788/`.
+- [x] Instagram page is `https://www.instagram.com/vd_barrisol/`.
+- [x] Service locations from Facebook: Mamaia-Sat, Valu lui Traian, Constanta, Mamaia, Cumpana, Navodari, Agigea, Lazu, Mangalia, Murfatlar.
 - [x] Orange and black are current known brand colors.
 - [x] Final palette is `#E9E3DF`, `#FF7A30`, `#465C88`, `#000000`.
 
@@ -72,13 +78,20 @@ Private content demo. The website is implemented, deployed on Vercel, and backed
 - [x] Generate and apply initial Payload migration to Neon.
 - [x] Replace public-facing fallback placeholder copy with private-demo draft copy.
 - [x] Support common Neon/Vercel Postgres env aliases for Payload runtime.
+- [x] Add CMS fields for Facebook, Instagram, company legal name, registration number, and service cities.
+- [x] Add homepage trust strip and service coverage section.
+- [x] Improve footer with contact, social, legal/company context, and localized links.
+- [x] Seed real contact/social/location details into Payload.
 
 ## CMS Content Checklist
 
 - [ ] Create first admin user at `/admin`.
-- [ ] Add real public phone number.
-- [ ] Add real public email.
-- [ ] Add real WhatsApp number in international format, e.g. `407XXXXXXXX`.
+- [x] Add real public phone number.
+- [x] Add real public email.
+- [x] Add real WhatsApp number in international format, e.g. `407XXXXXXXX`.
+- [x] Add Facebook and Instagram links.
+- [x] Add service city list.
+- [ ] Confirm whether visible company details should include `VD BARRISOL S.R.L.` and `CUI 51496619`.
 - [ ] Upload final logo file when available.
 - [ ] Upload real hero photos.
 - [ ] Add at least 4 real projects with city, area, ceiling type, summary, and photos.

@@ -24,10 +24,20 @@ html {
 
 body {
   background:
-    linear-gradient(180deg, rgb(233 227 223 / 90%), rgb(247 243 239 / 100%) 34rem),
+    linear-gradient(
+      180deg,
+      rgb(233 227 223 / 90%),
+      rgb(247 243 239 / 100%) 34rem
+    ),
     var(--color-neutral);
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   margin: 0;
   min-width: 320px;
 }
@@ -171,7 +181,12 @@ button {
 
 .hero-overlay {
   background:
-    linear-gradient(90deg, rgb(0 0 0 / 78%) 0%, rgb(0 0 0 / 46%) 42%, rgb(0 0 0 / 12%) 100%),
+    linear-gradient(
+      90deg,
+      rgb(0 0 0 / 78%) 0%,
+      rgb(0 0 0 / 46%) 42%,
+      rgb(0 0 0 / 12%) 100%
+    ),
     linear-gradient(0deg, rgb(0 0 0 / 38%), transparent 48%);
   z-index: 1;
 }
@@ -193,7 +208,13 @@ button {
   text-transform: uppercase;
 }
 
-.hero-content h1,
+.hero-content h1 {
+  font-size: 3.45rem;
+  line-height: 1;
+  margin: 0;
+  max-width: 17ch;
+}
+
 .page-hero h1 {
   font-size: 4rem;
   line-height: 0.96;
@@ -309,6 +330,7 @@ button {
 }
 
 .intro-grid,
+.coverage-grid,
 .contact-grid,
 .about-hero-grid {
   display: grid;
@@ -317,6 +339,7 @@ button {
 }
 
 .intro-grid h2,
+.coverage-grid h2,
 .section-heading h2,
 .contact-grid h2,
 .about-hero-grid h1,
@@ -329,10 +352,66 @@ button {
 }
 
 .intro-grid > p,
+.coverage-grid > p,
 .section-heading > p,
 .contact-grid p,
 .about-hero-grid p {
   color: var(--color-muted);
+}
+
+.trust-strip {
+  background: var(--color-black);
+  color: var(--color-white);
+  padding: 0 max(1rem, calc((100vw - var(--max-width)) / 2));
+}
+
+.trust-strip__inner {
+  border-top: 1px solid rgb(255 255 255 / 12%);
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.trust-item {
+  background: rgb(255 255 255 / 6%);
+  display: grid;
+  gap: 0.45rem;
+  min-height: 7.5rem;
+  padding: 1.35rem;
+}
+
+.trust-item span {
+  color: var(--color-orange);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.trust-item strong {
+  color: rgb(255 255 255 / 84%);
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.section--coverage {
+  padding-top: 3.5rem;
+}
+
+.coverage-list {
+  align-content: start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.coverage-list span {
+  background: var(--color-surface);
+  border: 1px solid rgb(0 0 0 / 8%);
+  border-radius: 999px;
+  color: var(--color-black);
+  font-weight: 800;
+  line-height: 1;
+  padding: 0.8rem 0.95rem;
 }
 
 .section--calculator {
@@ -700,6 +779,28 @@ button {
   max-width: 28rem;
 }
 
+.site-footer__company {
+  color: rgb(255 255 255 / 54%);
+  display: grid;
+  font-size: 0.9rem;
+  font-weight: 700;
+  gap: 0.35rem;
+  margin-top: 1.25rem;
+}
+
+.site-footer__column {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.site-footer__column h2 {
+  color: var(--color-white);
+  font-size: 0.86rem;
+  letter-spacing: 0;
+  margin: 0;
+  text-transform: uppercase;
+}
+
 .site-footer__links,
 .site-footer__contact {
   display: grid;
@@ -738,6 +839,7 @@ button {
   }
 
   .intro-grid,
+  .coverage-grid,
   .contact-grid,
   .about-hero-grid,
   .estimate-tool,
@@ -753,6 +855,10 @@ button {
 
   .testimonial-article {
     grid-template-columns: 1fr;
+  }
+
+  .trust-strip__inner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -799,6 +905,7 @@ button {
   .hero-content h1,
   .page-hero h1,
   .intro-grid h2,
+  .coverage-grid h2,
   .section-heading h2,
   .contact-grid h2,
   .about-hero-grid h1 {
@@ -821,6 +928,18 @@ button {
 
   .estimate-tool__controls {
     grid-template-columns: 1fr;
+  }
+
+  .trust-strip {
+    padding: 0 1rem;
+  }
+
+  .trust-strip__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .trust-item {
+    min-height: auto;
   }
 
   .estimate-result strong {

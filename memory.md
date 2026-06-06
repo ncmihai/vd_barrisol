@@ -14,8 +14,8 @@ Last updated: 2026-06-06
 - Brand name: VD BARRISOL.
 - Domain target: vdbarrisol.ro, not purchased yet.
 - Business: premium ceiling firm.
-- Main service area: Constanta.
-- Wider service area: other cities in Romania.
+- Main service area: Constanta and nearby localities.
+- Service locations from Facebook: Mamaia-Sat, Comuna Valu lui Traian, Constanta, Mamaia, Comuna Cumpana, Navodari, Comuna Agigea, Lazu, Mangalia, Murfatlar.
 - Site languages: Romanian and English.
 - Brand colors known now: orange and black.
 - Full palette:
@@ -23,7 +23,12 @@ Last updated: 2026-06-06
   - Orange: `#FF7A30`
   - Blue: `#465C88`
   - Black: `#000000`
-- Contact details: phone, email, WhatsApp to be managed from Payload.
+- Public phone: `0793 124 425`.
+- Public email: `vdbarrisol@gmail.com`.
+- WhatsApp number: `40793124425`.
+- Facebook: `https://www.facebook.com/p/VD-Barrisol-61564327003788/`.
+- Instagram: `https://www.instagram.com/vd_barrisol/`.
+- Contact details and social links are managed from Payload.
 - WhatsApp CTA should open a direct WhatsApp conversation link.
 
 ## Content Model Notes
@@ -72,10 +77,11 @@ Last updated: 2026-06-06
 - Local build requires `PAYLOAD_SECRET` even when using fallback content because Payload API routes import the config during production page-data collection.
 - Public pages use polished draft copy for the private demo, but real project photos and testimonials are still required before public launch.
 - Neon was baselined with `20260606_140813_initial` after `migrate:fresh`; do not use dynamic dev schema pushes as the production source of truth.
+- Added migration `20260606_153216_add_company_contact_fields` for Facebook, Instagram, legal/company fields, and service cities.
 
 ## Next Demo Requirements
 
 - Create the first Payload admin user in production.
-- Fill `Site Settings` with real phone, email, and WhatsApp number.
+- Confirm seeded `Site Settings` values: phone, email, WhatsApp, Facebook, Instagram, service cities, `VD BARRISOL S.R.L.`, and `CUI 51496619`.
 - Replace generated/placeholder images with real VD BARRISOL project photos.
 - Review basic privacy and cookie pages before sharing the site publicly.

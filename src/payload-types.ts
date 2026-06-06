@@ -615,8 +615,24 @@ export interface SiteSetting {
    * Use international format without spaces for best WhatsApp links, e.g. 407XXXXXXXX.
    */
   whatsappNumber?: string | null;
+  facebookUrl?: string | null;
+  instagramUrl?: string | null;
+  /**
+   * Optional public company name for footer/legal context.
+   */
+  legalName?: string | null;
+  /**
+   * Optional public registry/tax identifier. Confirm before final launch.
+   */
+  registrationNumber?: string | null;
   mainCity?: string | null;
   serviceArea?: string | null;
+  serviceCities?:
+    | {
+        city: string;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * Brand palette locked for the public design.
    */
@@ -793,8 +809,18 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   phone?: T;
   email?: T;
   whatsappNumber?: T;
+  facebookUrl?: T;
+  instagramUrl?: T;
+  legalName?: T;
+  registrationNumber?: T;
   mainCity?: T;
   serviceArea?: T;
+  serviceCities?:
+    | T
+    | {
+        city?: T;
+        id?: T;
+      };
   palette?:
     | T
     | {
