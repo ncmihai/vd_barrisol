@@ -476,30 +476,137 @@ button {
   box-shadow: 0 28px 70px rgb(0 0 0 / 24%);
   color: var(--color-ink);
   display: grid;
-  gap: 1rem;
-  grid-template-columns: 1fr 0.82fr;
+  gap: 1.1rem;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.72fr);
   padding: 1.1rem;
 }
 
-.estimate-tool__controls,
+.estimate-guided,
+.estimate-step-content,
 .lead-form {
   display: grid;
-  gap: 0.8rem;
+  gap: 1rem;
 }
 
-.estimate-tool__controls {
+.estimate-steps {
+  background: var(--color-surface);
+  border: 1px solid rgb(0 0 0 / 8%);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 0.35rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 0.3rem;
+}
+
+.estimate-steps button,
+.segmented-control button,
+.city-picker__options button {
+  background: transparent;
+  border-radius: 6px;
+  color: var(--color-muted);
+  font-weight: 900;
+  min-height: 2.7rem;
+  padding: 0.65rem 0.75rem;
+}
+
+.estimate-steps button {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.45rem;
+  justify-content: center;
+}
+
+.estimate-steps button span {
+  align-items: center;
+  background: rgb(0 0 0 / 8%);
+  border-radius: 999px;
+  color: var(--color-black);
+  display: inline-flex;
+  font-size: 0.78rem;
+  height: 1.35rem;
+  justify-content: center;
+  width: 1.35rem;
+}
+
+.estimate-steps button.is-active,
+.segmented-control button.is-active,
+.city-picker__options button.is-selected {
+  background: var(--color-black);
+  color: var(--color-white);
+}
+
+.estimate-steps button.is-active span {
+  background: var(--color-orange);
+}
+
+.estimate-step-panel {
+  border: 1px solid rgb(0 0 0 / 8%);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 1.1rem;
+  min-height: 26rem;
+  padding: 1rem;
+}
+
+.estimate-step-intro {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.estimate-step-intro h3 {
+  color: var(--color-black);
+  font-size: 1.8rem;
+  line-height: 1.05;
+  margin: 0;
+}
+
+.estimate-step-intro p {
+  color: var(--color-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.segmented-control {
+  background: var(--color-surface);
+  border: 1px solid rgb(0 0 0 / 8%);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 0.3rem;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 0.3rem;
 }
 
+.dimension-grid,
+.option-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.dimension-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.option-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.estimate-field,
 .estimate-tool label {
   display: grid;
   gap: 0.35rem;
 }
 
-.estimate-tool label span {
+.estimate-field span,
+.estimate-tool label span,
+.city-picker > span {
   color: var(--color-muted);
   font-size: 0.85rem;
   font-weight: 800;
+}
+
+.estimate-field--large input {
+  font-size: 1.8rem;
+  font-weight: 900;
 }
 
 .estimate-tool input,
@@ -519,6 +626,103 @@ button {
   resize: vertical;
 }
 
+.dimension-result {
+  align-content: center;
+  background: rgb(255 122 48 / 12%);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.85rem;
+}
+
+.dimension-result span {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.dimension-result strong {
+  color: var(--color-black);
+  font-size: 1.45rem;
+}
+
+.option-card {
+  background: var(--color-surface);
+  border: 1px solid rgb(0 0 0 / 8%);
+  border-radius: var(--radius);
+  color: var(--color-black);
+  display: grid;
+  gap: 0.6rem;
+  min-height: 8.8rem;
+  padding: 1rem;
+  text-align: left;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.option-card span {
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.option-card strong {
+  font-size: 1.1rem;
+  line-height: 1.15;
+}
+
+.option-card:hover {
+  transform: translateY(-1px);
+}
+
+.option-card.is-selected {
+  background: var(--color-black);
+  border-color: var(--color-black);
+  color: var(--color-white);
+}
+
+.option-card.is-selected span {
+  color: var(--color-orange);
+}
+
+.city-picker {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.city-picker__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.city-picker__options button {
+  background: var(--color-surface);
+  border: 1px solid rgb(0 0 0 / 8%);
+  min-height: 2.45rem;
+}
+
+.estimate-navigation {
+  align-items: center;
+  display: flex;
+  gap: 0.65rem;
+  justify-content: space-between;
+}
+
+.button--ghost-light {
+  background: var(--color-surface);
+  color: var(--color-black);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  transform: none;
+}
+
 .estimate-result {
   align-content: start;
   background:
@@ -529,6 +733,8 @@ button {
   display: grid;
   gap: 0.75rem;
   padding: 1.2rem;
+  position: sticky;
+  top: 5.5rem;
 }
 
 .estimate-result span {
@@ -554,9 +760,30 @@ button {
   margin: 0;
 }
 
+.estimate-factors,
+.estimate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.estimate-factors small {
+  background: rgb(255 255 255 / 10%);
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 999px;
+  color: rgb(255 255 255 / 82%);
+  font-weight: 800;
+  padding: 0.45rem 0.6rem;
+}
+
+.estimate-actions .button {
+  flex: 1 1 8rem;
+}
+
 .lead-form {
   grid-column: 1 / -1;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 0.25rem;
 }
 
 .lead-form__message {
@@ -875,6 +1102,14 @@ button {
     grid-template-columns: 1fr;
   }
 
+  .estimate-result {
+    position: static;
+  }
+
+  .option-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .trust-strip__inner {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -991,6 +1226,28 @@ button {
 
   .estimate-tool {
     padding: 0.85rem;
+  }
+
+  .estimate-steps,
+  .dimension-grid,
+  .option-grid,
+  .lead-form {
+    grid-template-columns: 1fr;
+  }
+
+  .estimate-step-panel {
+    min-height: auto;
+    padding: 0.85rem;
+  }
+
+  .estimate-steps button {
+    justify-content: flex-start;
+  }
+
+  .estimate-navigation,
+  .estimate-actions {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .trust-strip {

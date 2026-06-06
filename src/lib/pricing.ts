@@ -73,6 +73,13 @@ const findCityFee = (fees: CityFee[] | null | undefined, city?: string) => {
 
 const roundCurrency = (value: number) => Math.round(value)
 
+export const calculateSquareMetersFromDimensions = (lengthMeters: number, widthMeters: number) => {
+  const length = asPositiveNumber(lengthMeters, 0)
+  const width = asPositiveNumber(widthMeters, 0)
+
+  return length > 0 && width > 0 ? Math.round(length * width * 100) / 100 : 0
+}
+
 export const calculateEstimate = (
   input: EstimateInput,
   settings: PricingSettings,

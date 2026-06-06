@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
-import { calculateEstimate, type PricingSettings } from '@/lib/pricing'
+import {
+  calculateEstimate,
+  calculateSquareMetersFromDimensions,
+  type PricingSettings,
+} from '@/lib/pricing'
 
 const settings: PricingSettings = {
   basePriceRonPerSqm: 200,
@@ -57,5 +61,26 @@ describe('calculateEstimate', () => {
 
     expect(estimate.subtotalRon).toBe(1500)
     expect(estimate.lineItems.some((item) => item.label === 'Prag minim proiect')).toBe(true)
+  })
+
+  it('calculates square meters from room dimensions', () => {
+    expect(calculateSquareMetersFromDimensions(4.25, 3.4)).toBe(14.45)
+    expect(calculateSquareMetersFromDimensions(0, 3.4)).toBe(0)
+  })
+
+  it('uses the fallback travel fee for custom cities', () => {
+    const estimate = calculateEstimate(
+      {
+        ceilingType: 'mat',
+        city: 'Mangalia',
+        complexity: 'simple',
+        lighting: 'none',
+        squareMeters: 20,
+      },
+      settings,
+    )
+
+    expect(estimate.subtotalRon).toBe(4400)
+    expect(estimate.lineItems.some((item) => item.label === 'Transport / deplasare')).toBe(true)
   })
 })

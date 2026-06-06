@@ -103,6 +103,7 @@ export default async function Home({ params }: PageProps) {
           <EstimateCalculator
             locale={locale}
             pricing={data.pricing}
+            serviceCities={data.settings.serviceCities}
             whatsappHref={whatsappHref}
           />
         </div>
