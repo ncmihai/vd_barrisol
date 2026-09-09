@@ -120,6 +120,26 @@ const shouldUseFallbackContent = () =>
   process.env.NEXT_PHASE === "phase-production-build" ||
   process.env.VDB_FORCE_STATIC_FALLBACK === "1";
 
+const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number): Promise<T> => {
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<T>((_, reject) => {
+        timeout = setTimeout(
+          () => reject(new Error(`Public data request timed out after ${timeoutMs}ms`)),
+          timeoutMs,
+        );
+      }),
+    ]);
+  } finally {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+  }
+};
+
 export const getPublicSiteData = async (
   locale: Locale,
 ): Promise<PublicSiteData> => {
@@ -130,42 +150,73 @@ export const getPublicSiteData = async (
   }
 
   try {
-    const [{ default: config }, { getPayload }] = await Promise.all([
-      import("@payload-config"),
-      import("payload"),
-    ]);
-    const payload = await getPayload({ config });
-    const [
-      siteSettings,
-      navigationFooter,
-      homePage,
-      galleryPage,
+    const timeoutMs = Number.parseInt(
+      process.env.PUBLIC_DATA_TIMEOUT_MS || "8000",
+      10,
+    );
+    const data = await withTimeout(
+      (async () => {
+        const [{ default: config }, { getPayload }] = await Promise.all([
+          import("@payload-config"),
+          import("payload"),
+        ]);
+        const payload = await getPayload({ config });
+        const [
+          siteSettings,
+          navigationFooter,
+          homePage,
+          galleryPage,
+          aboutPage,
+          pricingSettings,
+          projects,
+          testimonials,
+        ] = await Promise.all([
+          payload.findGlobal({ depth: 2, locale, slug: "site-settings" }),
+          payload.findGlobal({ depth: 1, locale, slug: "navigation-footer" }),
+          payload.findGlobal({ depth: 2, locale, slug: "home-page" }),
+          payload.findGlobal({ depth: 1, locale, slug: "gallery-page" }),
+          payload.findGlobal({ depth: 2, locale, slug: "about-page" }),
+          payload.findGlobal({ depth: 0, locale, slug: "pricing-settings" }),
+          payload.find({
+            collection: "projects",
+            depth: 2,
+            limit: 20,
+            locale,
+            sort: "sortOrder",
+          }),
+          payload.find({
+            collection: "testimonials",
+            depth: 2,
+            limit: 20,
+            locale,
+            sort: "sortOrder",
+          }),
+        ]);
+
+        return {
+          aboutPage,
+          galleryPage,
+          homePage,
+          navigationFooter,
+          pricingSettings,
+          projects,
+          siteSettings,
+          testimonials,
+        };
+      })(),
+      Number.isFinite(timeoutMs) && timeoutMs > 0 ? timeoutMs : 8000,
+    );
+
+    const {
       aboutPage,
+      galleryPage,
+      homePage,
+      navigationFooter,
       pricingSettings,
       projects,
+      siteSettings,
       testimonials,
-    ] = await Promise.all([
-      payload.findGlobal({ depth: 2, locale, slug: "site-settings" }),
-      payload.findGlobal({ depth: 1, locale, slug: "navigation-footer" }),
-      payload.findGlobal({ depth: 2, locale, slug: "home-page" }),
-      payload.findGlobal({ depth: 1, locale, slug: "gallery-page" }),
-      payload.findGlobal({ depth: 2, locale, slug: "about-page" }),
-      payload.findGlobal({ depth: 0, locale, slug: "pricing-settings" }),
-      payload.find({
-        collection: "projects",
-        depth: 2,
-        limit: 20,
-        locale,
-        sort: "sortOrder",
-      }),
-      payload.find({
-        collection: "testimonials",
-        depth: 2,
-        limit: 20,
-        locale,
-        sort: "sortOrder",
-      }),
-    ]);
+    } = data;
 
     const settings = mapSiteSettings(asRecord(siteSettings), fallback.settings);
     const nav = mapNavigation(asRecord(navigationFooter), fallback.nav, locale);
