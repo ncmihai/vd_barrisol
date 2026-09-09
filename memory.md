@@ -2,6 +2,10 @@
 
 Last updated: 2026-09-09
 
+## Beta Audit Update
+
+`BETA_AUDIT.md` supersedes the earlier phase-completion claims. The source plan still defines scope. New code requires the beta-completion and focal-point migrations before deployment. Public pricing is approval-gated; existing projects become draft and testimonials unapproved pending owner review. Never publish the example fixtures as verified work. User already has an admin and explicitly wants the legal name/CUI visible. Future hosting is an owner-operated server, not necessarily Hetzner; see `SELF_HOSTING.md`.
+
 ## Current Planning Source
 
 - `VD_BARRISOL_BETA_PLAN.md` is the authoritative plan for the alpha-to-beta work.
@@ -89,7 +93,7 @@ Last updated: 2026-09-09
 
 ## Next Demo Requirements
 
-- Create the first Payload admin user in production.
+- The owner already created the first Payload admin user; verify access rather than creating another account.
 - Confirm seeded `Site Settings` values: phone, email, WhatsApp, Facebook, Instagram, service cities, `VD BARRISOL S.R.L.`, and `CUI 51496619`.
 - Replace generated/placeholder images with real VD BARRISOL project photos.
 - Review basic privacy and cookie pages before sharing the site publicly.

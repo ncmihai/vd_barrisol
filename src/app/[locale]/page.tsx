@@ -5,6 +5,7 @@ import { EstimateCalculator } from "@/components/EstimateCalculator";
 import { HeroCarousel } from "@/components/HeroCarousel";
 import { ProjectGrid } from "@/components/ProjectGrid";
 import { TestimonialList } from "@/components/TestimonialList";
+import { ServicesContent } from "@/components/ServicesContent";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { getPublicSiteData } from "@/lib/publicData";
 import { buildProfessionalServiceJsonLd } from "@/lib/structuredData";
@@ -57,26 +58,6 @@ export default async function Home({ params }: PageProps) {
   const whatsappHref = data.settings.whatsappNumber
     ? data.settings.whatsappHref
     : "#contact";
-  const trustItems =
-    locale === "ro"
-      ? [
-          { label: "Masuratoare", value: "discutie tehnica inainte de oferta" },
-          { label: "Montaj", value: "curat, precis, adaptat spatiului" },
-          { label: "Proiecte", value: "rezidentiale si comerciale" },
-          { label: "Acoperire", value: "Constanta si localitatile apropiate" },
-        ]
-      : [
-          {
-            label: "Measurement",
-            value: "technical check before the final offer",
-          },
-          {
-            label: "Installation",
-            value: "clean, precise, adapted to the room",
-          },
-          { label: "Projects", value: "residential and commercial" },
-          { label: "Coverage", value: "Constanta and nearby localities" },
-        ];
   const jsonLd = buildProfessionalServiceJsonLd({
     locale,
     projects: data.projects,
@@ -97,7 +78,9 @@ export default async function Home({ params }: PageProps) {
         <div className="section__inner intro-grid">
           <div>
             <p className="eyebrow">
-              {locale === "ro" ? "Solutii pentru interior" : "Interior solutions"}
+              {locale === "ro"
+                ? "Solutii pentru interior"
+                : "Interior solutions"}
             </p>
             <h2>
               {locale === "ro"
@@ -123,45 +106,12 @@ export default async function Home({ params }: PageProps) {
             <p>{data.home.calculatorCopy}</p>
           </div>
           <EstimateCalculator
+            pricingAvailable={data.pricingAvailable}
             locale={locale}
             pricing={data.pricing}
             serviceCities={data.settings.serviceCities}
             whatsappHref={whatsappHref}
           />
-        </div>
-      </section>
-
-      <section
-        className="trust-strip"
-        aria-label={locale === "ro" ? "Detalii de incredere" : "Trust details"}
-      >
-        <div className="trust-strip__inner">
-          {trustItems.map((item) => (
-            <div className="trust-item" key={item.label}>
-              <span>{item.label}</span>
-              <strong>{item.value}</strong>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="section section--coverage">
-        <div className="section__inner coverage-grid">
-          <div>
-            <p className="eyebrow">
-              {locale === "ro" ? "Zone acoperite" : "Coverage"}
-            </p>
-            <h2>
-              {locale === "ro"
-                ? "Lucrari in Constanta si localitatile din jur"
-                : "Work in Constanta and nearby localities"}
-            </h2>
-          </div>
-          <div className="coverage-list">
-            {data.settings.serviceCities.map((city) => (
-              <span key={city}>{city}</span>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -184,9 +134,11 @@ export default async function Home({ params }: PageProps) {
           {data.projects.length > 0 ? (
             <ProjectGrid
               locale={locale}
-              projects={(data.projects.filter((project) => project.featured).length > 0
+              projects={(data.projects.filter((project) => project.featured)
+                .length > 0
                 ? data.projects.filter((project) => project.featured)
-                : data.projects).slice(0, 2)}
+                : data.projects
+              ).slice(0, 2)}
             />
           ) : (
             <p className="content-empty">
@@ -205,6 +157,21 @@ export default async function Home({ params }: PageProps) {
           </div>
         </section>
       )}
+      <ServicesContent data={data} locale={locale} />
+      <section className="section section--coverage">
+        <div className="section__inner coverage-grid">
+          <h2>
+            {locale === "ro"
+              ? "Constanta si imprejurimi"
+              : "Constanta and nearby areas"}
+          </h2>
+          <div className="coverage-list">
+            {data.settings.serviceCities.map((city) => (
+              <span key={city}>{city}</span>
+            ))}
+          </div>
+        </div>
+      </section>
     </>
   );
 }

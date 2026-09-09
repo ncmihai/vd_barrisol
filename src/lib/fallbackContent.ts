@@ -19,10 +19,9 @@ const byLocale = {
       "Selected examples of stretch ceiling finishes, lighting details, and interior applications for homes and commercial spaces.",
     galleryHeadline: "Work examples and client notes",
     heroCopy:
-      "Premium stretch ceilings with clean lines, integrated lighting options, and finishes chosen for the room, not just the square meter price.",
-    heroEyebrow: "Constanta based, working across Romania",
-    heroHeadline:
-      "VD BARRISOL stretch ceilings for refined, practical interiors",
+      "For homes, hotels and commercial interiors in Constanta and nearby areas. Explore finishes and estimate your budget.",
+    heroEyebrow: "Constanta and nearby areas",
+    heroHeadline: "VD BARRISOL. Stretch ceilings.",
     serviceArea:
       "Mamaia-Sat, Valu lui Traian, Constanta, Mamaia, Cumpana, Navodari, Agigea, Lazu, Mangalia and Murfatlar",
     values: [
@@ -57,10 +56,9 @@ const byLocale = {
       "Exemple selectate de finisaje, detalii de iluminat si aplicatii pentru locuinte si spatii comerciale.",
     galleryHeadline: "Exemple de lucrari si note de la clienti",
     heroCopy:
-      "Tavane extensibile premium cu linii curate, optiuni de iluminat integrat si finisaje alese pentru camera, nu doar pentru pretul pe metru patrat.",
-    heroEyebrow: "Constanta, cu proiecte in Romania",
-    heroHeadline:
-      "VD BARRISOL - tavane extensibile pentru interioare rafinate si practice",
+      "Pentru locuinte, hoteluri si spatii comerciale din Constanta si imprejurimi. Exploreaza finisajele si simuleaza bugetul.",
+    heroEyebrow: "Constanta si imprejurimi",
+    heroHeadline: "VD BARRISOL. Tavane extensibile.",
     serviceArea:
       "Mamaia-Sat, Valu lui Traian, Constanta, Mamaia, Cumpana, Navodari, Agigea, Lazu, Mangalia si Murfatlar",
     values: [
@@ -302,8 +300,8 @@ export const getFallbackSiteData = (locale: Locale): PublicSiteData => {
       registrationNumber: "CUI 51496619",
       seoDescription:
         locale === "ro"
-          ? "VD BARRISOL realizeaza tavane extensibile premium in Constanta si in alte orase din Romania."
-          : "VD BARRISOL builds premium stretch ceilings in Constanta and across Romania.",
+          ? "VD BARRISOL realizeaza tavane extensibile in Constanta si imprejurimi. Lucrarile din alte zone se discuta individual."
+          : "VD BARRISOL installs stretch ceilings in Constanta and nearby areas. Projects further afield are discussed individually.",
       seoTitle:
         locale === "ro"
           ? "VD BARRISOL - tavane extensibile premium"

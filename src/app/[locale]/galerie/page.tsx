@@ -1,50 +1,52 @@
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
-import { ProjectGrid } from '@/components/ProjectGrid'
-import { TestimonialList } from '@/components/TestimonialList'
-import { type Locale } from '@/lib/i18n'
-import { getPublicSiteData } from '@/lib/publicData'
+import { ProjectGrid } from "@/components/ProjectGrid";
+import { TestimonialList } from "@/components/TestimonialList";
+import { type Locale } from "@/lib/i18n";
+import { getPublicSiteData } from "@/lib/publicData";
 
-export const revalidate = 300
+export const revalidate = 300;
 
 type PageProps = {
-  params: Promise<{ locale: string }>
-}
+  params: Promise<{ locale: string }>;
+};
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { locale: rawLocale } = await params
-  if (rawLocale !== 'ro') {
-    notFound()
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { locale: rawLocale } = await params;
+  if (rawLocale !== "ro") {
+    notFound();
   }
 
-  const locale = rawLocale
-  const data = await getPublicSiteData(locale)
-  const title = data.gallery.seoTitle || data.gallery.headline
-  const description = data.gallery.seoDescription || data.gallery.copy
+  const locale = rawLocale;
+  const data = await getPublicSiteData(locale);
+  const title = data.gallery.seoTitle || data.gallery.headline;
+  const description = data.gallery.seoDescription || data.gallery.copy;
 
   return {
     alternates: {
-      canonical: '/ro/galerie',
+      canonical: "/ro/galerie",
       languages: {
-        en: '/en/gallery',
-        ro: '/ro/galerie',
+        en: "/en/gallery",
+        ro: "/ro/galerie",
       },
     },
     description,
     title,
-  }
+  };
 }
 
 export default async function GaleriePage({ params }: PageProps) {
-  const { locale: rawLocale } = await params
+  const { locale: rawLocale } = await params;
 
-  if (rawLocale !== 'ro') {
-    notFound()
+  if (rawLocale !== "ro") {
+    notFound();
   }
 
-  const locale = rawLocale as Locale
-  const data = await getPublicSiteData(locale)
+  const locale = rawLocale as Locale;
+  const data = await getPublicSiteData(locale);
 
   return (
     <>
@@ -57,7 +59,7 @@ export default async function GaleriePage({ params }: PageProps) {
       </section>
       <section className="section">
         <div className="section__inner">
-          <ProjectGrid locale={locale} projects={data.projects} />
+          <ProjectGrid filters locale={locale} projects={data.projects} />
         </div>
       </section>
       <section className="section section--testimonials">
@@ -70,5 +72,5 @@ export default async function GaleriePage({ params }: PageProps) {
         </div>
       </section>
     </>
-  )
+  );
 }

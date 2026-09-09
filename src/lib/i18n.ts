@@ -13,7 +13,7 @@ export const normalizeLocale = (value?: string): Locale =>
 export const routeLabels = {
   en: {
     about: "About",
-    bookMeasurement: "Book",
+    bookMeasurement: "WhatsApp",
     calculator: "Estimate",
     contact: "Contact",
     gallery: "Gallery",
@@ -24,7 +24,7 @@ export const routeLabels = {
   },
   ro: {
     about: "Despre",
-    bookMeasurement: "Programeaza",
+    bookMeasurement: "WhatsApp",
     calculator: "Estimare",
     contact: "Contact",
     gallery: "Galerie",
@@ -37,6 +37,8 @@ export const routeLabels = {
 
 export const localizedPaths = {
   en: {
+    services: "/en/services",
+    architects: "/en/architects",
     about: "/en/about",
     cookies: "/en/cookies",
     gallery: "/en/gallery",
@@ -44,6 +46,8 @@ export const localizedPaths = {
     privacy: "/en/privacy",
   },
   ro: {
+    services: "/ro/servicii",
+    architects: "/ro/arhitecti",
     about: "/ro/despre",
     cookies: "/ro/cookies",
     gallery: "/ro/galerie",
@@ -52,5 +56,14 @@ export const localizedPaths = {
   },
 } satisfies Record<
   Locale,
-  Record<"about" | "cookies" | "gallery" | "home" | "privacy", string>
+  Record<
+    | "about"
+    | "cookies"
+    | "gallery"
+    | "home"
+    | "privacy"
+    | "services"
+    | "architects",
+    string
+  >
 >;

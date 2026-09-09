@@ -1,105 +1,162 @@
-'use client'
+"use client";
 
-import { type FormEvent, useMemo, useState } from 'react'
+import { type FormEvent, useMemo, useState, useEffect, useRef } from "react";
+import Link from "next/link";
 
-import type { Locale } from '@/lib/i18n'
+import type { Locale } from "@/lib/i18n";
 import {
   calculateEstimate,
   calculateSquareMetersFromDimensions,
+  parseDecimal,
   type EstimateInput,
   type PricingOption,
   type PricingSettings,
-} from '@/lib/pricing'
+} from "@/lib/pricing";
 
 const copy = {
   en: {
-    area: 'Area',
-    areaCopy: 'Start with the approximate ceiling surface. You can enter square meters directly or calculate them from room dimensions.',
-    back: 'Back',
-    ceilingType: 'Finish',
-    city: 'City',
-    complexity: 'Room details',
-    customCity: 'Other city',
-    details: 'Details',
-    dimensions: 'Length x width',
-    disclaimer: 'Approximate estimate',
-    invalidEstimate: 'Complete the required fields to see an estimate.',
-    email: 'Email',
-    factors: 'Included factors',
-    lighting: 'Lighting',
-    message: 'Message',
-    name: 'Name',
-    next: 'Next',
-    phone: 'Phone',
-    result: 'Estimated range',
-    send: 'Send estimate',
-    sent: 'Estimate sent.',
-    showLeadForm: 'Send the estimate',
-    squareMeters: 'Square meters',
-    squareMeterUnit: 'sqm',
-    submitError: 'Could not send the estimate. Try WhatsApp or phone.',
-    surface: 'Surface',
-    useDimensions: 'Use dimensions',
-    useSquareMeters: 'Use square meters',
-    whatsapp: 'WhatsApp',
-    whatsappMessage: 'Hello, I made a VD BARRISOL estimate',
-    width: 'Width',
-    length: 'Length',
+    area: "Area",
+    areaCopy:
+      "Start with the approximate ceiling surface. You can enter square meters directly or calculate them from room dimensions.",
+    back: "Back",
+    ceilingType: "Finish",
+    city: "City",
+    complexity: "Room details",
+    customCity: "Other city",
+    details: "Details",
+    dimensions: "Length x width",
+    disclaimer: "Approximate estimate",
+    invalidEstimate: "Complete the required fields to see an estimate.",
+    email: "Email",
+    factors: "Included factors",
+    lighting: "Lighting",
+    message: "Message",
+    name: "Name",
+    next: "Next",
+    phone: "Phone",
+    result: "Estimated range",
+    send: "Send estimate",
+    sent: "Estimate sent.",
+    showLeadForm: "Send the estimate",
+    squareMeters: "Square meters",
+    squareMeterUnit: "sqm",
+    submitError: "Could not send the estimate. Try WhatsApp or phone.",
+    surface: "Surface",
+    useDimensions: "Use dimensions",
+    useSquareMeters: "Use square meters",
+    whatsapp: "WhatsApp",
+    whatsappMessage: "Hello, I made a VD BARRISOL estimate",
+    width: "Width",
+    length: "Length",
   },
   ro: {
-    area: 'Suprafata',
-    areaCopy: 'Incepe cu suprafata aproximativa a tavanului. Poti introduce direct metri patrati sau ii poti calcula din dimensiunile camerei.',
-    back: 'Inapoi',
-    ceilingType: 'Finisaj',
-    city: 'Oras',
-    complexity: 'Detalii camera',
-    customCity: 'Alt oras',
-    details: 'Detalii',
-    dimensions: 'Lungime x latime',
-    disclaimer: 'Estimare aproximativa',
-    invalidEstimate: 'Completeaza campurile obligatorii pentru a vedea estimarea.',
-    email: 'Email',
-    factors: 'Factori inclusi',
-    lighting: 'Iluminat',
-    message: 'Mesaj',
-    name: 'Nume',
-    next: 'Continua',
-    phone: 'Telefon',
-    result: 'Interval estimativ',
-    send: 'Trimite estimarea',
-    sent: 'Estimarea a fost trimisa.',
-    showLeadForm: 'Trimite estimarea',
-    squareMeters: 'Metri patrati',
-    squareMeterUnit: 'mp',
-    submitError: 'Estimarea nu a putut fi trimisa. Incearca WhatsApp sau telefon.',
-    surface: 'Suprafata',
-    useDimensions: 'Foloseste dimensiuni',
-    useSquareMeters: 'Foloseste metri patrati',
-    whatsapp: 'WhatsApp',
-    whatsappMessage: 'Buna, am facut o estimare VD BARRISOL',
-    width: 'Latime',
-    length: 'Lungime',
+    area: "Suprafata",
+    areaCopy:
+      "Incepe cu suprafata aproximativa a tavanului. Poti introduce direct metri patrati sau ii poti calcula din dimensiunile camerei.",
+    back: "Inapoi",
+    ceilingType: "Finisaj",
+    city: "Oras",
+    complexity: "Detalii camera",
+    customCity: "Alt oras",
+    details: "Detalii",
+    dimensions: "Lungime x latime",
+    disclaimer: "Estimare aproximativa",
+    invalidEstimate:
+      "Completeaza campurile obligatorii pentru a vedea estimarea.",
+    email: "Email",
+    factors: "Factori inclusi",
+    lighting: "Iluminat",
+    message: "Mesaj",
+    name: "Nume",
+    next: "Continua",
+    phone: "Telefon",
+    result: "Interval estimativ",
+    send: "Trimite estimarea",
+    sent: "Estimarea a fost trimisa.",
+    showLeadForm: "Trimite estimarea",
+    squareMeters: "Metri patrati",
+    squareMeterUnit: "mp",
+    submitError:
+      "Estimarea nu a putut fi trimisa. Incearca WhatsApp sau telefon.",
+    surface: "Suprafata",
+    useDimensions: "Foloseste dimensiuni",
+    useSquareMeters: "Foloseste metri patrati",
+    whatsapp: "WhatsApp",
+    whatsappMessage: "Buna, am facut o estimare VD BARRISOL",
+    width: "Latime",
+    length: "Lungime",
   },
-} as const
+} as const;
 
-type AreaMode = 'sqm' | 'dimensions'
+type AreaMode = "sqm" | "dimensions";
 
-const getOptionValue = (options: PricingSettings['ceilingTypes'], fallback: string) =>
-  options?.[0]?.value || fallback
+const getOptionValue = (
+  options: PricingSettings["ceilingTypes"],
+  fallback: string,
+) => options?.[0]?.value || fallback;
 
-const findOption = (options: PricingOption[] | null | undefined, value: string) =>
-  (options || []).find((option) => option.value === value) || (options || [])[0]
+const findOption = (
+  options: PricingOption[] | null | undefined,
+  value: string,
+) =>
+  (options || []).find((option) => option.value === value) ||
+  (options || [])[0];
 
-const optionKey = (option: PricingOption) => option.value || option.label || ''
+const optionKey = (option: PricingOption) => option.value || option.label || "";
+const radioTabIndex = (
+  options: PricingOption[] | null | undefined,
+  option: PricingOption,
+  selected: string,
+) =>
+  option.value === selected ||
+  (!options?.some((item) => item.value === selected) && options?.[0] === option)
+    ? 0
+    : -1;
 
-const formatNumber = (value: number) =>
-  value.toLocaleString('ro-RO', {
+const moveRadioFocus = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+  if (
+    ![
+      "ArrowRight",
+      "ArrowDown",
+      "ArrowLeft",
+      "ArrowUp",
+      "Home",
+      "End",
+    ].includes(event.key)
+  )
+    return;
+  event.preventDefault();
+  const buttons = Array.from(
+    event.currentTarget.parentElement!.querySelectorAll<HTMLButtonElement>(
+      '[role="radio"]',
+    ),
+  );
+  const current = buttons.indexOf(event.currentTarget);
+  const next =
+    event.key === "Home"
+      ? 0
+      : event.key === "End"
+        ? buttons.length - 1
+        : (current +
+            (["ArrowRight", "ArrowDown"].includes(event.key) ? 1 : -1) +
+            buttons.length) %
+          buttons.length;
+  buttons[next]?.focus();
+  buttons[next]?.click();
+};
+
+const formatNumber = (value: number, locale: Locale = "ro") =>
+  value.toLocaleString(locale === "ro" ? "ro-RO" : "en-GB", {
     maximumFractionDigits: 2,
     minimumFractionDigits: 0,
-  })
+  });
 
-const formatCurrencyRange = (min: number, max: number, currency: 'RON' | 'EUR') =>
-  `${min.toLocaleString('ro-RO')} - ${max.toLocaleString('ro-RO')} ${currency}`
+const formatCurrencyRange = (
+  min: number,
+  max: number,
+  currency: "RON" | "EUR",
+  locale: Locale,
+) => `${formatNumber(min, locale)} - ${formatNumber(max, locale)} ${currency}`;
 
 const buildWhatsAppHref = ({
   city,
@@ -119,117 +176,207 @@ const buildWhatsAppHref = ({
   title,
   whatsappHref,
 }: {
-  city: string
-  cityLabel: string
-  complexityFieldLabel: string
-  complexityLabel: string
-  estimateLabel: string
-  estimateEur: string
-  estimateRon: string
-  finishFieldLabel: string
-  lightingFieldLabel: string
-  lightingLabel: string
-  squareMeterUnit: string
-  squareMeters: number
-  surfaceFieldLabel: string
-  surfaceLabel: string
-  title: string
-  whatsappHref: string
+  city: string;
+  cityLabel: string;
+  complexityFieldLabel: string;
+  complexityLabel: string;
+  estimateLabel: string;
+  estimateEur: string;
+  estimateRon: string;
+  finishFieldLabel: string;
+  lightingFieldLabel: string;
+  lightingLabel: string;
+  squareMeterUnit: string;
+  squareMeters: number;
+  surfaceFieldLabel: string;
+  surfaceLabel: string;
+  title: string;
+  whatsappHref: string;
 }) => {
-  if (whatsappHref === '#contact') {
-    return whatsappHref
+  if (whatsappHref === "#contact") {
+    return whatsappHref;
   }
 
   const message = [
     title,
     `${estimateLabel}: ${estimateRon} (${estimateEur})`,
-    `${surfaceFieldLabel}: ${formatNumber(squareMeters)} ${squareMeterUnit}`,
+    `${surfaceFieldLabel}: ${formatNumber(squareMeters, squareMeterUnit === "sqm" ? "en" : "ro")} ${squareMeterUnit}`,
     `${finishFieldLabel}: ${surfaceLabel}`,
     `${lightingFieldLabel}: ${lightingLabel}`,
     `${complexityFieldLabel}: ${complexityLabel}`,
     `${cityLabel}: ${city}`,
-  ].join('\n')
-  const separator = whatsappHref.includes('?') ? '&' : '?'
+  ].join("\n");
+  const separator = whatsappHref.includes("?") ? "&" : "?";
 
-  return `${whatsappHref}${separator}text=${encodeURIComponent(message)}`
-}
+  return `${whatsappHref}${separator}text=${encodeURIComponent(message)}`;
+};
 
 export function EstimateCalculator({
   locale,
-  pricing,
+  pricing: initialPricing,
   serviceCities,
   whatsappHref,
+  pricingAvailable = true,
 }: {
-  locale: Locale
-  pricing: PricingSettings
-  serviceCities: string[]
-  whatsappHref: string
+  locale: Locale;
+  pricing: PricingSettings;
+  serviceCities: string[];
+  whatsappHref: string;
+  pricingAvailable?: boolean;
 }) {
-  const labels = copy[locale]
-  const cities = serviceCities.length > 0 ? serviceCities : ['Constanta']
-  const defaultCity = cities.includes('Constanta') ? 'Constanta' : cities[0]
+  const [pricing, setCurrentPricing] = useState(initialPricing);
+  const labels = copy[locale];
+  const cities = serviceCities.length > 0 ? serviceCities : ["Constanta"];
+  const defaultCity = cities.includes("Constanta") ? "Constanta" : cities[0];
   const steps = [
-    { key: 'area', label: labels.area },
-    { key: 'finish', label: labels.ceilingType },
-    { key: 'lighting', label: labels.lighting },
-    { key: 'details', label: labels.details },
-  ]
-  const [activeStep, setActiveStep] = useState(0)
-  const [areaMode, setAreaMode] = useState<AreaMode>('sqm')
+    { key: "area", label: labels.area },
+    { key: "finish", label: labels.ceilingType },
+    { key: "lighting", label: labels.lighting },
+    { key: "details", label: labels.details },
+  ];
+  const [activeStep, setActiveStep] = useState(0);
+  const [areaMode, setAreaMode] = useState<AreaMode>("sqm");
   const [dimensions, setDimensions] = useState({
-    length: 5,
-    width: 4,
-  })
+    length: "5",
+    width: "4",
+  });
+  const [rawArea, setRawArea] = useState("20");
+  const [restored, setRestored] = useState(false);
+  const submissionKey = useRef("");
+  const sending = useRef(false);
   const [input, setInput] = useState<EstimateInput>({
-    ceilingType: getOptionValue(pricing.ceilingTypes, 'mat-standard'),
+    ceilingType: getOptionValue(pricing.ceilingTypes, "mat-standard"),
     city: defaultCity,
-    complexity: getOptionValue(pricing.complexityOptions, 'simple'),
-    lighting: getOptionValue(pricing.lightingOptions, 'none'),
+    complexity: getOptionValue(pricing.complexityOptions, "simple"),
+    lighting: getOptionValue(pricing.lightingOptions, "none"),
     squareMeters: 20,
-  })
+  });
   const [lead, setLead] = useState({
-    email: '',
-    message: '',
-    name: '',
-    phone: '',
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [showLeadForm, setShowLeadForm] = useState(false)
-  const [status, setStatus] = useState<'idle' | 'sent' | 'error'>('idle')
-  const estimate = useMemo(() => {
-    try {
-      return calculateEstimate(input, pricing)
-    } catch {
-      return null
+    email: "",
+    message: "",
+    name: "",
+    phone: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showLeadForm, setShowLeadForm] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sent" | "error" | "review">(
+    "idle",
+  );
+  useEffect(() => {
+    // Session state is read after hydration so the server and initial client markup agree.
+    restoreSession();
+    function restoreSession() {
+      try {
+        const saved = JSON.parse(
+          sessionStorage.getItem("vd-estimate-v1") || "null",
+        );
+        if (
+          saved?.version === 1 &&
+          typeof saved.rawArea === "string" &&
+          saved.rawArea.length <= 30 &&
+          typeof saved.dimensions?.length === "string" &&
+          typeof saved.dimensions?.width === "string" &&
+          saved.input &&
+          typeof saved.input.city === "string" &&
+          saved.input.city.length <= 120 &&
+          typeof saved.input.ceilingType === "string" &&
+          typeof saved.input.lighting === "string" &&
+          typeof saved.input.complexity === "string" &&
+          ["sqm", "dimensions"].includes(saved.areaMode)
+        ) {
+          setInput({
+            ...saved.input,
+            squareMeters:
+              saved.areaMode === "dimensions"
+                ? calculateSquareMetersFromDimensions(
+                    parseDecimal(saved.dimensions.length),
+                    parseDecimal(saved.dimensions.width),
+                  )
+                : parseDecimal(saved.rawArea),
+          });
+          setRawArea(saved.rawArea);
+          setDimensions(saved.dimensions);
+          setAreaMode(saved.areaMode);
+          setActiveStep(
+            Math.max(0, Math.min(3, Number(saved.activeStep) || 0)),
+          );
+        }
+      } catch {
+        /* Storage is optional; do not persist contact fields. */
+      }
+      setRestored(true);
     }
-  }, [input, pricing])
-  const hasValidEstimate = Boolean(estimate)
-  const ceilingType = findOption(pricing.ceilingTypes, input.ceilingType)
-  const lighting = findOption(pricing.lightingOptions, input.lighting)
-  const complexity = findOption(pricing.complexityOptions, input.complexity)
+  }, []);
+  useEffect(() => {
+    if (!restored) return;
+    try {
+      sessionStorage.setItem(
+        "vd-estimate-v1",
+        JSON.stringify({
+          version: 1,
+          input,
+          rawArea,
+          dimensions,
+          areaMode,
+          activeStep,
+        }),
+      );
+    } catch {
+      /* Private browsing may deny storage. */
+    }
+  }, [restored, input, rawArea, dimensions, areaMode, activeStep]);
+  const estimate = useMemo(() => {
+    if (!pricingAvailable) return null;
+    try {
+      return calculateEstimate(input, pricing);
+    } catch {
+      return null;
+    }
+  }, [input, pricing, pricingAvailable]);
+  const hasValidEstimate = Boolean(estimate);
+  const ceilingType = findOption(pricing.ceilingTypes, input.ceilingType);
+  const lighting = findOption(pricing.lightingOptions, input.lighting);
+  const complexity = findOption(pricing.complexityOptions, input.complexity);
   const estimateRon = estimate
-    ? formatCurrencyRange(estimate.estimateRonMin, estimate.estimateRonMax, 'RON')
-    : labels.invalidEstimate
+    ? formatCurrencyRange(
+        estimate.estimateRonMin,
+        estimate.estimateRonMax,
+        "RON",
+        locale,
+      )
+    : labels.invalidEstimate;
   const estimateEur = estimate
-    ? formatCurrencyRange(estimate.estimateEurMin, estimate.estimateEurMax, 'EUR')
-    : ''
+    ? formatCurrencyRange(
+        estimate.estimateEurMin,
+        estimate.estimateEurMax,
+        "EUR",
+        locale,
+      )
+    : "";
   const factorChips = [
-    `${labels.surface}: ${Number.isFinite(input.squareMeters) ? `${formatNumber(input.squareMeters)} ${labels.squareMeterUnit}` : '—'}`,
+    `${labels.surface}: ${Number.isFinite(input.squareMeters) ? `${formatNumber(input.squareMeters, locale)} ${labels.squareMeterUnit}` : "—"}`,
     ceilingType?.label || labels.ceilingType,
     lighting?.label || labels.lighting,
     complexity?.label || labels.complexity,
     input.city || labels.city,
-  ]
+  ];
   const richerCalculatorInput = {
     ...input,
+    schemaVersion: 1,
     areaMode,
-    dimensions: areaMode === 'dimensions' ? dimensions : null,
+    dimensions:
+      areaMode === "dimensions"
+        ? {
+            length: parseDecimal(dimensions.length),
+            width: parseDecimal(dimensions.width),
+          }
+        : null,
     selectedLabels: {
-      ceilingType: ceilingType?.label || '',
-      complexity: complexity?.label || '',
-      lighting: lighting?.label || '',
+      ceilingType: ceilingType?.label || "",
+      complexity: complexity?.label || "",
+      lighting: lighting?.label || "",
     },
-  }
+  };
   const prefilledWhatsappHref = buildWhatsAppHref({
     city: input.city || defaultCity,
     cityLabel: labels.city,
@@ -245,49 +392,59 @@ export function EstimateCalculator({
     squareMeters: input.squareMeters,
     surfaceFieldLabel: labels.surface,
     surfaceLabel: ceilingType?.label || labels.ceilingType,
-    title: labels.whatsappMessage,
+    title: `${labels.whatsappMessage}. ${pricing.disclaimer || labels.disclaimer}`,
     whatsappHref,
-  })
+  });
 
   const updateInput = (nextInput: Partial<EstimateInput>) => {
     setInput((current) => ({
       ...current,
       ...nextInput,
-    }))
-  }
+    }));
+  };
 
   const updateDimensions = (nextDimensions: Partial<typeof dimensions>) => {
     const updated = {
       ...dimensions,
       ...nextDimensions,
-    }
-    const squareMeters = calculateSquareMetersFromDimensions(updated.length, updated.width)
+    };
+    const squareMeters = calculateSquareMetersFromDimensions(
+      parseDecimal(updated.length),
+      parseDecimal(updated.width),
+    );
 
-    setDimensions(updated)
+    setDimensions(updated);
     setInput((currentInput) => ({
       ...currentInput,
       squareMeters,
-    }))
-  }
+    }));
+  };
 
   const handleAreaMode = (nextMode: AreaMode) => {
-    setAreaMode(nextMode)
+    setAreaMode(nextMode);
 
-    if (nextMode === 'dimensions') {
+    if (nextMode === "dimensions") {
       updateInput({
-        squareMeters: calculateSquareMetersFromDimensions(dimensions.length, dimensions.width),
-      })
+        squareMeters: calculateSquareMetersFromDimensions(
+          parseDecimal(dimensions.length),
+          parseDecimal(dimensions.width),
+        ),
+      });
+    } else {
+      updateInput({ squareMeters: parseDecimal(rawArea) });
     }
-  }
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    if (!estimate) return
-    setIsSubmitting(true)
-    setStatus('idle')
+    event.preventDefault();
+    if (!estimate || sending.current || status === "sent") return;
+    sending.current = true;
+    submissionKey.current ||= crypto.randomUUID();
+    setIsSubmitting(true);
+    setStatus("idle");
 
     try {
-      const response = await fetch('/api/leads', {
+      const response = await fetch("/api/leads", {
         body: JSON.stringify({
           calculatorInput: richerCalculatorInput,
           city: input.city,
@@ -300,35 +457,55 @@ export function EstimateCalculator({
           message: lead.message,
           name: lead.name,
           phone: lead.phone,
-          preferredContact: 'whatsapp',
-          pricingSnapshot: pricing,
+          preferredContact: "whatsapp",
+          pricingVersion: pricing.updatedAt,
         }),
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
+          "Idempotency-Key": submissionKey.current,
         },
-        method: 'POST',
-      })
+        method: "POST",
+      });
 
+      if (response.status === 409) {
+        const result = await response.json();
+        if (result.code === "PRICING_CHANGED") {
+          setCurrentPricing(result.pricing);
+          setStatus("review");
+          return;
+        }
+      }
       if (!response.ok) {
-        throw new Error('Lead request failed.')
+        throw new Error("Lead request failed.");
       }
 
-      setStatus('sent')
+      setStatus("sent");
     } catch {
-      setStatus('error')
+      setStatus("error");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
+      sending.current = false;
     }
-  }
+  };
 
   return (
     <div className="estimate-tool">
+      {!pricingAvailable && (
+        <p className="lead-form__message" role="status">
+          {locale === "ro"
+            ? "Estimarea numerica nu este disponibila momentan. Discuta proiectul cu noi pe WhatsApp."
+            : "A numeric estimate is currently unavailable. Discuss your project with us on WhatsApp."}
+        </p>
+      )}
       <div className="estimate-guided">
-        <div className="estimate-steps" aria-label={locale === 'ro' ? 'Pasi calculator' : 'Calculator steps'}>
+        <div
+          className="estimate-steps"
+          aria-label={locale === "ro" ? "Pasi calculator" : "Calculator steps"}
+        >
           {steps.map((step, index) => (
             <button
-              aria-current={index === activeStep ? 'step' : undefined}
-              className={index === activeStep ? 'is-active' : ''}
+              aria-current={index === activeStep ? "step" : undefined}
+              className={index === activeStep ? "is-active" : ""}
               key={step.key}
               onClick={() => setActiveStep(index)}
               type="button"
@@ -348,28 +525,34 @@ export function EstimateCalculator({
               </div>
               <div className="segmented-control">
                 <button
-                  className={areaMode === 'sqm' ? 'is-active' : ''}
-                  onClick={() => handleAreaMode('sqm')}
+                  className={areaMode === "sqm" ? "is-active" : ""}
+                  onClick={() => handleAreaMode("sqm")}
                   type="button"
                 >
                   {labels.useSquareMeters}
                 </button>
                 <button
-                  className={areaMode === 'dimensions' ? 'is-active' : ''}
-                  onClick={() => handleAreaMode('dimensions')}
+                  className={areaMode === "dimensions" ? "is-active" : ""}
+                  onClick={() => handleAreaMode("dimensions")}
                   type="button"
                 >
                   {labels.useDimensions}
                 </button>
               </div>
-              {areaMode === 'sqm' ? (
+              {areaMode === "sqm" ? (
                 <label className="estimate-field estimate-field--large">
                   <span>{labels.squareMeters}</span>
                   <input
-                    min="1"
-                    onChange={(event) => updateInput({ squareMeters: Number(event.target.value) })}
-                    type="number"
-                    value={Number.isFinite(input.squareMeters) ? input.squareMeters : ''}
+                    inputMode="decimal"
+                    aria-invalid={!hasValidEstimate && pricingAvailable}
+                    onChange={(event) => {
+                      setRawArea(event.target.value);
+                      updateInput({
+                        squareMeters: parseDecimal(event.target.value),
+                      });
+                    }}
+                    type="text"
+                    value={rawArea}
                   />
                 </label>
               ) : (
@@ -377,27 +560,30 @@ export function EstimateCalculator({
                   <label className="estimate-field">
                     <span>{labels.length}</span>
                     <input
-                      min="0.1"
-                      onChange={(event) => updateDimensions({ length: Number(event.target.value) })}
-                      step="0.1"
-                      type="number"
-                      value={Number.isFinite(dimensions.length) ? dimensions.length : ''}
+                      inputMode="decimal"
+                      onChange={(event) =>
+                        updateDimensions({ length: event.target.value })
+                      }
+                      type="text"
+                      value={dimensions.length}
                     />
                   </label>
                   <label className="estimate-field">
                     <span>{labels.width}</span>
                     <input
-                      min="0.1"
-                      onChange={(event) => updateDimensions({ width: Number(event.target.value) })}
-                      step="0.1"
-                      type="number"
-                      value={Number.isFinite(dimensions.width) ? dimensions.width : ''}
+                      inputMode="decimal"
+                      onChange={(event) =>
+                        updateDimensions({ width: event.target.value })
+                      }
+                      type="text"
+                      value={dimensions.width}
                     />
                   </label>
                   <div className="dimension-result">
                     <span>{labels.squareMeters}</span>
                     <strong>
-                      {formatNumber(input.squareMeters)} {labels.squareMeterUnit}
+                      {formatNumber(input.squareMeters, locale)}{" "}
+                      {labels.squareMeterUnit}
                     </strong>
                   </div>
                 </div>
@@ -406,13 +592,30 @@ export function EstimateCalculator({
           )}
 
           {activeStep === 1 && (
-            <div aria-label={labels.ceilingType} className="option-grid" role="group">
+            <div
+              aria-label={labels.ceilingType}
+              className="option-grid"
+              role="radiogroup"
+            >
               {(pricing.ceilingTypes || []).map((option) => (
                 <button
-                  className={option.value === input.ceilingType ? 'option-card is-selected' : 'option-card'}
-                  aria-pressed={option.value === input.ceilingType}
+                  className={
+                    option.value === input.ceilingType
+                      ? "option-card is-selected"
+                      : "option-card"
+                  }
+                  role="radio"
+                  aria-checked={option.value === input.ceilingType}
+                  tabIndex={radioTabIndex(
+                    pricing.ceilingTypes,
+                    option,
+                    input.ceilingType,
+                  )}
+                  onKeyDown={moveRadioFocus}
                   key={optionKey(option)}
-                  onClick={() => updateInput({ ceilingType: option.value || '' })}
+                  onClick={() =>
+                    updateInput({ ceilingType: option.value || "" })
+                  }
                   type="button"
                 >
                   <span>{labels.ceilingType}</span>
@@ -423,13 +626,28 @@ export function EstimateCalculator({
           )}
 
           {activeStep === 2 && (
-            <div aria-label={labels.lighting} className="option-grid" role="group">
+            <div
+              aria-label={labels.lighting}
+              className="option-grid"
+              role="radiogroup"
+            >
               {(pricing.lightingOptions || []).map((option) => (
                 <button
-                  className={option.value === input.lighting ? 'option-card is-selected' : 'option-card'}
-                  aria-pressed={option.value === input.lighting}
+                  className={
+                    option.value === input.lighting
+                      ? "option-card is-selected"
+                      : "option-card"
+                  }
+                  role="radio"
+                  aria-checked={option.value === input.lighting}
+                  tabIndex={radioTabIndex(
+                    pricing.lightingOptions,
+                    option,
+                    input.lighting,
+                  )}
+                  onKeyDown={moveRadioFocus}
                   key={optionKey(option)}
-                  onClick={() => updateInput({ lighting: option.value || '' })}
+                  onClick={() => updateInput({ lighting: option.value || "" })}
                   type="button"
                 >
                   <span>{labels.lighting}</span>
@@ -441,13 +659,30 @@ export function EstimateCalculator({
 
           {activeStep === 3 && (
             <div className="estimate-step-content">
-              <div aria-label={labels.complexity} className="option-grid" role="group">
+              <div
+                aria-label={labels.complexity}
+                className="option-grid"
+                role="radiogroup"
+              >
                 {(pricing.complexityOptions || []).map((option) => (
                   <button
-                    className={option.value === input.complexity ? 'option-card is-selected' : 'option-card'}
-                    aria-pressed={option.value === input.complexity}
+                    className={
+                      option.value === input.complexity
+                        ? "option-card is-selected"
+                        : "option-card"
+                    }
+                    role="radio"
+                    aria-checked={option.value === input.complexity}
+                    tabIndex={radioTabIndex(
+                      pricing.complexityOptions,
+                      option,
+                      input.complexity,
+                    )}
+                    onKeyDown={moveRadioFocus}
                     key={optionKey(option)}
-                    onClick={() => updateInput({ complexity: option.value || '' })}
+                    onClick={() =>
+                      updateInput({ complexity: option.value || "" })
+                    }
                     type="button"
                   >
                     <span>{labels.complexity}</span>
@@ -460,7 +695,7 @@ export function EstimateCalculator({
                 <div className="city-picker__options">
                   {cities.map((city) => (
                     <button
-                      className={city === input.city ? 'is-selected' : ''}
+                      className={city === input.city ? "is-selected" : ""}
                       key={city}
                       onClick={() => updateInput({ city })}
                       type="button"
@@ -472,9 +707,11 @@ export function EstimateCalculator({
                 <label className="estimate-field">
                   <span>{labels.customCity}</span>
                   <input
-                    onChange={(event) => updateInput({ city: event.target.value })}
+                    onChange={(event) =>
+                      updateInput({ city: event.target.value })
+                    }
                     type="text"
-                    value={cities.includes(input.city || '') ? '' : input.city}
+                    value={cities.includes(input.city || "") ? "" : input.city}
                   />
                 </label>
               </div>
@@ -485,19 +722,36 @@ export function EstimateCalculator({
             <button
               className="button button--ghost-light"
               disabled={activeStep === 0}
-              onClick={() => setActiveStep((current) => Math.max(0, current - 1))}
+              onClick={() =>
+                setActiveStep((current) => Math.max(0, current - 1))
+              }
               type="button"
             >
               {labels.back}
             </button>
-            <button
-              className="button button--primary"
-              disabled={activeStep === steps.length - 1}
-              onClick={() => setActiveStep((current) => Math.min(steps.length - 1, current + 1))}
-              type="button"
-            >
-              {labels.next}
-            </button>
+            {activeStep === steps.length - 1 ? (
+              <Link
+                className="button button--primary"
+                href={`${locale === "ro" ? "/ro/galerie" : "/en/gallery"}?finish=${encodeURIComponent(input.ceilingType)}&lighting=${encodeURIComponent(input.lighting)}`}
+              >
+                {locale === "ro"
+                  ? "Vezi exemple potrivite"
+                  : "View matching projects"}
+              </Link>
+            ) : (
+              <button
+                className="button button--primary"
+                disabled={!hasValidEstimate && pricingAvailable}
+                onClick={() =>
+                  setActiveStep((current) =>
+                    Math.min(steps.length - 1, current + 1),
+                  )
+                }
+                type="button"
+              >
+                {labels.next}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -512,18 +766,32 @@ export function EstimateCalculator({
           ))}
         </div>
         <p>{pricing.disclaimer || labels.disclaimer}</p>
+        <p>
+          {pricing.vatMode === "included"
+            ? locale === "ro"
+              ? "TVA inclus."
+              : "VAT included."
+            : pricing.vatMode === "excluded"
+              ? locale === "ro"
+                ? "TVA exclus; nu este calculat aici."
+                : "VAT excluded; not calculated here."
+              : locale === "ro"
+                ? "Tratamentul TVA se confirma in oferta."
+                : "VAT treatment will be confirmed in the proposal."}
+        </p>
         <div className="estimate-actions">
           <a
-            aria-disabled={!hasValidEstimate}
-            className={hasValidEstimate ? 'button button--dark' : 'button button--dark is-disabled'}
-            href={hasValidEstimate ? prefilledWhatsappHref : undefined}
-            onClick={(event) => {
-              if (!hasValidEstimate) event.preventDefault()
-            }}
+            className="button button--dark"
+            href={hasValidEstimate ? prefilledWhatsappHref : whatsappHref}
           >
             {labels.whatsapp}
           </a>
-          <button className="button button--primary" disabled={!hasValidEstimate} onClick={() => setShowLeadForm(true)} type="button">
+          <button
+            className="button button--primary"
+            disabled={!hasValidEstimate}
+            onClick={() => setShowLeadForm(true)}
+            type="button"
+          >
             {labels.showLeadForm}
           </button>
         </div>
@@ -532,18 +800,25 @@ export function EstimateCalculator({
       {showLeadForm && (
         <form className="lead-form" onSubmit={handleSubmit}>
           <label>
-            <span>{labels.name}</span>
+            <span>{labels.name} *</span>
             <input
-              onChange={(event) => setLead((current) => ({ ...current, name: event.target.value }))}
+              onChange={(event) =>
+                setLead((current) => ({ ...current, name: event.target.value }))
+              }
               required
               type="text"
               value={lead.name}
             />
           </label>
           <label>
-            <span>{labels.phone}</span>
+            <span>{labels.phone} *</span>
             <input
-              onChange={(event) => setLead((current) => ({ ...current, phone: event.target.value }))}
+              onChange={(event) =>
+                setLead((current) => ({
+                  ...current,
+                  phone: event.target.value,
+                }))
+              }
               required
               type="tel"
               value={lead.phone}
@@ -552,7 +827,12 @@ export function EstimateCalculator({
           <label>
             <span>{labels.email}</span>
             <input
-              onChange={(event) => setLead((current) => ({ ...current, email: event.target.value }))}
+              onChange={(event) =>
+                setLead((current) => ({
+                  ...current,
+                  email: event.target.value,
+                }))
+              }
               type="email"
               value={lead.email}
             />
@@ -560,17 +840,51 @@ export function EstimateCalculator({
           <label className="lead-form__message">
             <span>{labels.message}</span>
             <textarea
-              onChange={(event) => setLead((current) => ({ ...current, message: event.target.value }))}
+              onChange={(event) =>
+                setLead((current) => ({
+                  ...current,
+                  message: event.target.value,
+                }))
+              }
               value={lead.message}
             />
           </label>
-          <button className="button button--primary" disabled={isSubmitting} type="submit">
+          <p className="lead-form__message">
+            {locale === "ro"
+              ? "* Obligatoriu. Emailul si mesajul sunt optionale. Datele sunt folosite pentru a raspunde solicitarii."
+              : "* Required. Email and message are optional. Your details are used to respond to this enquiry."}{" "}
+            <Link
+              href={locale === "ro" ? "/ro/confidentialitate" : "/en/privacy"}
+            >
+              {locale === "ro" ? "Confidentialitate" : "Privacy"}
+            </Link>
+          </p>
+          <button
+            className="button button--primary"
+            disabled={isSubmitting || status === "sent" || !hasValidEstimate}
+            type="submit"
+          >
             {labels.send}
           </button>
-          {status === 'sent' && <p className="form-status form-status--ok">{labels.sent}</p>}
-          {status === 'error' && <p className="form-status form-status--error">{labels.submitError}</p>}
+          {status === "sent" && (
+            <p role="status" className="form-status form-status--ok">
+              {labels.sent}
+            </p>
+          )}
+          {status === "error" && (
+            <p role="alert" className="form-status form-status--error">
+              {labels.submitError}
+            </p>
+          )}
+          {status === "review" && (
+            <p role="alert" className="form-status">
+              {locale === "ro"
+                ? "Preturile s-au schimbat. Verifica noua estimare si trimite din nou pentru confirmare."
+                : "Prices changed. Review the updated estimate and send again to confirm."}
+            </p>
+          )}
         </form>
       )}
     </div>
-  )
+  );
 }

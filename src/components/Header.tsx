@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { LocaleLink } from "@/components/LocaleLink";
 
 import type { Locale } from "@/lib/i18n";
 import { localizedPaths, routeLabels } from "@/lib/i18n";
@@ -47,9 +48,7 @@ export function Header({
           >
             {settings.whatsappNumber ? labels.bookMeasurement : labels.contact}
           </a>
-          <Link className="locale-link" href={labels.localeSwitchPath}>
-            {labels.localeSwitch}
-          </Link>
+          <LocaleLink locale={locale} />
         </div>
       </div>
     </header>

@@ -1,43 +1,68 @@
-import type { Metadata } from 'next'
-import Image from 'next/image'
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
-import { isLocale } from '@/lib/i18n'
-import { getPublicSiteData } from '@/lib/publicData'
+import { isLocale } from "@/lib/i18n";
+import { getPublicSiteData } from "@/lib/publicData";
+import { ProjectDetails } from "@/components/ProjectDetails";
 
-export const revalidate = 300
+export const revalidate = 300;
 
-type PageProps = { params: Promise<{ locale: string; slug: string }> }
+type PageProps = { params: Promise<{ locale: string; slug: string }> };
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { locale: rawLocale, slug } = await params
-  if (!isLocale(rawLocale) || rawLocale !== 'ro') notFound()
-  const data = await getPublicSiteData('ro')
-  const project = data.projects.find((item) => item.slug === slug)
-  if (!project) notFound()
-  return { description: project.summary, title: project.title }
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { locale: rawLocale, slug } = await params;
+  if (!isLocale(rawLocale) || rawLocale !== "ro") notFound();
+  const data = await getPublicSiteData("ro");
+  const project = data.projects.find((item) => item.slug === slug);
+  if (!project) notFound();
+  return {
+    description: project.summary,
+    title: project.title,
+    robots:
+      project.publication === "demo"
+        ? { index: false, follow: false }
+        : undefined,
+    alternates: {
+      canonical: `/ro/proiecte/${project.slug}`,
+      languages: {
+        ro: `/ro/proiecte/${project.slug}`,
+        en: `/en/projects/${project.slug}`,
+      },
+    },
+  };
 }
 
 export default async function ProjectPage({ params }: PageProps) {
-  const { locale: rawLocale, slug } = await params
-  if (!isLocale(rawLocale) || rawLocale !== 'ro') notFound()
-  const data = await getPublicSiteData('ro')
-  const project = data.projects.find((item) => item.slug === slug)
-  if (!project) notFound()
+  const { locale: rawLocale, slug } = await params;
+  if (!isLocale(rawLocale) || rawLocale !== "ro") notFound();
+  const data = await getPublicSiteData("ro");
+  const project = data.projects.find((item) => item.slug === slug);
+  if (!project) notFound();
 
   return (
     <>
       <section className="page-hero page-hero--project">
         <div className="section__inner project-detail-grid">
           <div>
-            <p className="eyebrow">{project.city || 'Proiect'}</p>
+            <p className="eyebrow">{project.city || "Proiect"}</p>
             <h1>{project.title}</h1>
             <p>{project.summary}</p>
-            <Link className="button button--primary" href="/ro#calculator">Discută un proiect similar</Link>
+            <Link className="button button--primary" href="/ro#calculator">
+              Discută un proiect similar
+            </Link>
           </div>
           <div className="project-detail-image">
-            <Image alt={project.image.alt} fill priority sizes="(max-width: 900px) 100vw, 52vw" src={project.image.src} />
+            <Image
+              alt={project.image.alt}
+              fill
+              priority
+              sizes="(max-width: 900px) 100vw, 52vw"
+              src={project.image.src}
+            />
           </div>
         </div>
       </section>
@@ -48,6 +73,11 @@ export default async function ProjectPage({ params }: PageProps) {
           <span>VD BARRISOL</span>
         </div>
       </section>
+      <ProjectDetails
+        project={project}
+        locale="ro"
+        whatsapp={data.settings.whatsappHref}
+      />
     </>
-  )
+  );
 }

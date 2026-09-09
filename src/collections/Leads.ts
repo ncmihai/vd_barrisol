@@ -1,13 +1,20 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig } from "payload";
 
-import { admins, authenticated } from '@/access/admins'
+import { admins, authenticated } from "@/access/admins";
 
 export const Leads: CollectionConfig = {
-  slug: 'leads',
+  slug: "leads",
   admin: {
-    defaultColumns: ['name', 'phone', 'city', 'estimateRonMin', 'estimateRonMax', 'createdAt'],
-    group: 'Business',
-    useAsTitle: 'name',
+    defaultColumns: [
+      "name",
+      "phone",
+      "city",
+      "estimateRonMin",
+      "estimateRonMax",
+      "createdAt",
+    ],
+    group: "Business",
+    useAsTitle: "name",
   },
   access: {
     create: authenticated,
@@ -17,94 +24,108 @@ export const Leads: CollectionConfig = {
   },
   fields: [
     {
-      name: 'name',
-      type: 'text',
+      name: "requestKey",
+      type: "text",
+      unique: true,
+      index: true,
+      admin: { readOnly: true },
+    },
+    {
+      name: "notificationStatus",
+      type: "select",
+      defaultValue: "pending",
+      options: ["pending", "sent", "failed", "skipped"],
+      admin: { readOnly: true },
+    },
+    {
+      name: "name",
+      type: "text",
       required: true,
     },
     {
-      name: 'phone',
-      type: 'text',
+      name: "phone",
+      type: "text",
       required: true,
     },
     {
-      name: 'email',
-      type: 'email',
+      name: "email",
+      type: "email",
     },
     {
-      name: 'city',
-      type: 'text',
+      name: "city",
+      type: "text",
     },
     {
-      name: 'message',
-      type: 'textarea',
+      name: "message",
+      type: "textarea",
     },
     {
-      name: 'preferredContact',
-      type: 'select',
-      defaultValue: 'whatsapp',
+      name: "preferredContact",
+      type: "select",
+      defaultValue: "whatsapp",
       options: [
-        { label: 'WhatsApp', value: 'whatsapp' },
-        { label: 'Phone', value: 'phone' },
-        { label: 'Email', value: 'email' },
+        { label: "WhatsApp", value: "whatsapp" },
+        { label: "Phone", value: "phone" },
+        { label: "Email", value: "email" },
       ],
       required: true,
     },
     {
-      name: 'locale',
-      type: 'select',
-      defaultValue: 'ro',
+      name: "locale",
+      type: "select",
+      defaultValue: "ro",
       options: [
-        { label: 'Romanian', value: 'ro' },
-        { label: 'English', value: 'en' },
+        { label: "Romanian", value: "ro" },
+        { label: "English", value: "en" },
       ],
       required: true,
     },
     {
-      name: 'calculatorInput',
-      type: 'json',
+      name: "calculatorInput",
+      type: "json",
       admin: {
         readOnly: true,
       },
     },
     {
-      name: 'pricingSnapshot',
-      type: 'json',
+      name: "pricingSnapshot",
+      type: "json",
       admin: {
         readOnly: true,
       },
     },
     {
-      name: 'estimateRonMin',
-      type: 'number',
+      name: "estimateRonMin",
+      type: "number",
       admin: {
         readOnly: true,
       },
     },
     {
-      name: 'estimateRonMax',
-      type: 'number',
+      name: "estimateRonMax",
+      type: "number",
       admin: {
         readOnly: true,
       },
     },
     {
-      name: 'estimateEurMin',
-      type: 'number',
+      name: "estimateEurMin",
+      type: "number",
       admin: {
         readOnly: true,
       },
     },
     {
-      name: 'estimateEurMax',
-      type: 'number',
+      name: "estimateEurMax",
+      type: "number",
       admin: {
         readOnly: true,
       },
     },
     {
-      name: 'source',
-      type: 'text',
-      defaultValue: 'website-calculator',
+      name: "source",
+      type: "text",
+      defaultValue: "website-calculator",
     },
   ],
-}
+};

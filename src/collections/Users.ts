@@ -1,16 +1,17 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig } from "payload";
 
-import { admins, adminsOrSelf, isAdmin } from '@/access/admins'
+import { admins, adminsOrSelf, isAdmin } from "@/access/admins";
 
 export const Users: CollectionConfig = {
-  slug: 'users',
+  slug: "users",
   admin: {
-    group: 'Admin',
+    group: "Admin",
     hidden: ({ user }) => !isAdmin(user),
-    useAsTitle: 'email',
+    useAsTitle: "email",
   },
   auth: true,
   access: {
+    unlock: admins,
     create: admins,
     delete: admins,
     read: adminsOrSelf,
@@ -18,19 +19,19 @@ export const Users: CollectionConfig = {
   },
   fields: [
     {
-      name: 'name',
-      type: 'text',
+      name: "name",
+      type: "text",
       admin: {
-        description: 'Internal display name for the Payload admin.',
+        description: "Internal display name for the Payload admin.",
       },
     },
     {
-      name: 'role',
-      type: 'select',
-      defaultValue: 'editor',
+      name: "role",
+      type: "select",
+      defaultValue: "editor",
       options: [
-        { label: 'Admin', value: 'admin' },
-        { label: 'Editor', value: 'editor' },
+        { label: "Admin", value: "admin" },
+        { label: "Editor", value: "editor" },
       ],
       required: true,
       access: {
@@ -38,4 +39,4 @@ export const Users: CollectionConfig = {
       },
     },
   ],
-}
+};

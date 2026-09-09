@@ -100,6 +100,7 @@ export interface Config {
     'gallery-page': GalleryPage;
     'about-page': AboutPage;
     'pricing-settings': PricingSetting;
+    services: Service;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
@@ -108,6 +109,7 @@ export interface Config {
     'gallery-page': GalleryPageSelect<false> | GalleryPageSelect<true>;
     'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
     'pricing-settings': PricingSettingsSelect<false> | PricingSettingsSelect<true>;
+    services: ServicesSelect<false> | ServicesSelect<true>;
   };
   locale: 'ro' | 'en';
   widgets: {
@@ -173,6 +175,14 @@ export interface User {
  */
 export interface ImageAsset {
   id: number;
+  /**
+   * Horizontal focal point for cropped images, in percent.
+   */
+  focalX?: number | null;
+  /**
+   * Vertical focal point for cropped images, in percent.
+   */
+  focalY?: number | null;
   title: string;
   /**
    * Public alt text. Keep it descriptive for SEO and accessibility.
@@ -234,6 +244,18 @@ export interface ImageAsset {
  */
 export interface Project {
   id: number;
+  publication: 'draft' | 'demo' | 'published';
+  audience?: ('residential' | 'commercial') | null;
+  /**
+   * Matching Pricing Settings finish ID, if applicable.
+   */
+  finishId?: string | null;
+  /**
+   * Matching Pricing Settings lighting ID, if applicable.
+   */
+  lightingId?: string | null;
+  details?: string | null;
+  technicalDetails?: string | null;
   title: string;
   slug: string;
   city?: string | null;
@@ -253,6 +275,10 @@ export interface Project {
  */
 export interface Testimonial {
   id: number;
+  /**
+   * Publish only genuine testimonials approved for public use.
+   */
+  approved?: boolean | null;
   clientName: string;
   city?: string | null;
   headline?: string | null;
@@ -289,6 +315,8 @@ export interface Testimonial {
  */
 export interface Lead {
   id: number;
+  requestKey?: string | null;
+  notificationStatus?: ('pending' | 'sent' | 'failed' | 'skipped') | null;
   name: string;
   phone: string;
   email?: string | null;
@@ -437,6 +465,8 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "image-assets_select".
  */
 export interface ImageAssetsSelect<T extends boolean = true> {
+  focalX?: T;
+  focalY?: T;
   title?: T;
   alt?: T;
   intendedUsage?: T;
@@ -501,6 +531,12 @@ export interface ImageAssetsSelect<T extends boolean = true> {
  * via the `definition` "projects_select".
  */
 export interface ProjectsSelect<T extends boolean = true> {
+  publication?: T;
+  audience?: T;
+  finishId?: T;
+  lightingId?: T;
+  details?: T;
+  technicalDetails?: T;
   title?: T;
   slug?: T;
   city?: T;
@@ -519,6 +555,7 @@ export interface ProjectsSelect<T extends boolean = true> {
  * via the `definition` "testimonials_select".
  */
 export interface TestimonialsSelect<T extends boolean = true> {
+  approved?: T;
   clientName?: T;
   city?: T;
   headline?: T;
@@ -537,6 +574,8 @@ export interface TestimonialsSelect<T extends boolean = true> {
  * via the `definition` "leads_select".
  */
 export interface LeadsSelect<T extends boolean = true> {
+  requestKey?: T;
+  notificationStatus?: T;
   name?: T;
   phone?: T;
   email?: T;
@@ -683,6 +722,7 @@ export interface NavigationFooter {
  */
 export interface HomePage {
   id: number;
+  motionPreset?: ('off' | 'stretch') | null;
   hero: {
     eyebrow?: string | null;
     headline: string;
@@ -756,6 +796,10 @@ export interface AboutPage {
  */
 export interface PricingSetting {
   id: number;
+  /**
+   * Enable only after reviewing all prices, translations and VAT wording. Otherwise visitors can contact you without a numeric quote.
+   */
+  approved?: boolean | null;
   basePriceRonPerSqm: number;
   minimumProjectRon: number;
   eurRate: number;
@@ -795,6 +839,46 @@ export interface PricingSetting {
     | null;
   fallbackTravelFeeRon: number;
   disclaimer?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Only enabled, translated items appear publicly. Keep unconfirmed services unpublished.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services".
+ */
+export interface Service {
+  id: number;
+  items?:
+    | {
+        enabled?: boolean | null;
+        title: string;
+        description: string;
+        customQuote?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  architects?: {
+    enabled?: boolean | null;
+    title?: string | null;
+    description?: string | null;
+  };
+  process?:
+    | {
+        title: string;
+        description: string;
+        id?: string | null;
+      }[]
+    | null;
+  faq?:
+    | {
+        enabled?: boolean | null;
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -872,6 +956,7 @@ export interface NavigationFooterSelect<T extends boolean = true> {
  * via the `definition` "home-page_select".
  */
 export interface HomePageSelect<T extends boolean = true> {
+  motionPreset?: T;
   hero?:
     | T
     | {
@@ -955,6 +1040,7 @@ export interface AboutPageSelect<T extends boolean = true> {
  * via the `definition` "pricing-settings_select".
  */
 export interface PricingSettingsSelect<T extends boolean = true> {
+  approved?: T;
   basePriceRonPerSqm?: T;
   minimumProjectRon?: T;
   eurRate?: T;
@@ -994,6 +1080,46 @@ export interface PricingSettingsSelect<T extends boolean = true> {
       };
   fallbackTravelFeeRon?: T;
   disclaimer?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services_select".
+ */
+export interface ServicesSelect<T extends boolean = true> {
+  items?:
+    | T
+    | {
+        enabled?: T;
+        title?: T;
+        description?: T;
+        customQuote?: T;
+        id?: T;
+      };
+  architects?:
+    | T
+    | {
+        enabled?: T;
+        title?: T;
+        description?: T;
+      };
+  process?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  faq?:
+    | T
+    | {
+        enabled?: T;
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

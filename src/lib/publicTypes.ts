@@ -1,6 +1,8 @@
 import type { PricingSettings } from "@/lib/pricing";
 
 export type PublicImage = {
+  focalX?: number;
+  focalY?: number;
   alt: string;
   height?: number;
   src: string;
@@ -42,6 +44,7 @@ export type PublicNav = {
 };
 
 export type PublicHomePage = {
+  motionPreset?: "off" | "stretch";
   calculatorCopy: string;
   calculatorHeadline: string;
   contactCopy: string;
@@ -77,6 +80,14 @@ export type PublicAboutPage = {
 };
 
 export type PublicProject = {
+  id?: string;
+  publication?: "demo" | "published";
+  audience?: string;
+  finishId?: string;
+  lightingId?: string;
+  images?: PublicImage[];
+  details?: string;
+  technicalDetails?: string;
   areaSqm?: number;
   ceilingType?: string;
   city?: string;
@@ -96,6 +107,14 @@ export type PublicTestimonial = {
 };
 
 export type PublicSiteData = {
+  contentStatus?: "demo" | "live" | "unavailable";
+  pricingAvailable?: boolean;
+  services?: {
+    items: Array<{ title: string; description: string; customQuote: boolean }>;
+    architects?: { title: string; description: string };
+    process: Array<{ title: string; description: string }>;
+    faq: Array<{ question: string; answer: string }>;
+  };
   about: PublicAboutPage;
   gallery: PublicGalleryPage;
   home: PublicHomePage;

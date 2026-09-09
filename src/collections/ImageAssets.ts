@@ -1,76 +1,83 @@
-import type { CollectionConfig, FieldAccess } from 'payload'
+import type { CollectionConfig, FieldAccess } from "payload";
 
-import { admins, authenticated, isAdminOrEditor } from '@/access/admins'
-import { cleanupDeletedImageAssetFiles } from '@/lib/imageAssetDeletion'
-import { revalidatePublicSite } from '@/lib/revalidatePublic'
+import { admins, authenticated, isAdminOrEditor } from "@/access/admins";
+import { cleanupDeletedImageAssetFiles } from "@/lib/imageAssetDeletion";
+import { revalidatePublicSite } from "@/lib/revalidatePublic";
 
 const usageOptions = [
-  { label: 'Library', value: 'library' },
-  { label: 'Logo', value: 'logo' },
-  { label: 'Hero', value: 'hero' },
-  { label: 'Project', value: 'project' },
-  { label: 'Gallery', value: 'gallery' },
-  { label: 'About', value: 'about' },
-  { label: 'Open Graph', value: 'og' },
-]
+  { label: "Library", value: "library" },
+  { label: "Logo", value: "logo" },
+  { label: "Hero", value: "hero" },
+  { label: "Project", value: "project" },
+  { label: "Gallery", value: "gallery" },
+  { label: "About", value: "about" },
+  { label: "Open Graph", value: "og" },
+];
 
 const variantFields = [
   {
-    name: 'url',
-    type: 'text' as const,
+    name: "url",
+    type: "text" as const,
     admin: {
       disabled: true,
     },
   },
   {
-    name: 'digiStoragePath',
-    type: 'text' as const,
+    name: "digiStoragePath",
+    type: "text" as const,
     admin: {
       disabled: true,
     },
   },
   {
-    name: 'width',
-    type: 'number' as const,
+    name: "width",
+    type: "number" as const,
     admin: {
       disabled: true,
     },
   },
   {
-    name: 'height',
-    type: 'number' as const,
+    name: "height",
+    type: "number" as const,
     admin: {
       disabled: true,
     },
   },
   {
-    name: 'mimeType',
-    type: 'text' as const,
+    name: "mimeType",
+    type: "text" as const,
     admin: {
       disabled: true,
     },
   },
   {
-    name: 'filesize',
-    type: 'number' as const,
+    name: "filesize",
+    type: "number" as const,
     admin: {
       disabled: true,
     },
   },
-]
+];
 
-const internalFieldRead: FieldAccess = ({ req: { user } }) => isAdminOrEditor(user)
+const internalFieldRead: FieldAccess = ({ req: { user } }) =>
+  isAdminOrEditor(user);
 
 export const ImageAssets: CollectionConfig = {
-  slug: 'image-assets',
+  slug: "image-assets",
   labels: {
-    plural: 'Image Library',
-    singular: 'Image',
+    plural: "Image Library",
+    singular: "Image",
   },
   admin: {
-    defaultColumns: ['adminThumbnailUrl', 'title', 'intendedUsage', 'preferredVariant', 'updatedAt'],
-    group: 'Content',
-    useAsTitle: 'title',
+    defaultColumns: [
+      "adminThumbnailUrl",
+      "title",
+      "intendedUsage",
+      "preferredVariant",
+      "updatedAt",
+    ],
+    group: "Content",
+    useAsTitle: "title",
   },
   access: {
     create: authenticated,
@@ -81,66 +88,87 @@ export const ImageAssets: CollectionConfig = {
   hooks: {
     afterChange: [
       async ({ doc }) => {
-        await revalidatePublicSite()
+        await revalidatePublicSite();
 
-        return doc
+        return doc;
       },
     ],
     afterDelete: [cleanupDeletedImageAssetFiles],
   },
   fields: [
     {
-      name: 'title',
-      type: 'text',
-      required: true,
-    },
-    {
-      name: 'alt',
-      type: 'text',
-      localized: true,
-      required: true,
+      name: "focalX",
+      type: "number",
+      min: 0,
+      max: 100,
+      defaultValue: 50,
       admin: {
-        description: 'Public alt text. Keep it descriptive for SEO and accessibility.',
+        description: "Horizontal focal point for cropped images, in percent.",
       },
     },
     {
-      name: 'intendedUsage',
-      type: 'select',
-      defaultValue: ['library'],
+      name: "focalY",
+      type: "number",
+      min: 0,
+      max: 100,
+      defaultValue: 50,
+      admin: {
+        description: "Vertical focal point for cropped images, in percent.",
+      },
+    },
+    {
+      name: "title",
+      type: "text",
+      required: true,
+    },
+    {
+      name: "alt",
+      type: "text",
+      localized: true,
+      required: true,
+      admin: {
+        description:
+          "Public alt text. Keep it descriptive for SEO and accessibility.",
+      },
+    },
+    {
+      name: "intendedUsage",
+      type: "select",
+      defaultValue: ["library"],
       hasMany: true,
       options: usageOptions,
     },
     {
-      name: 'preferredVariant',
-      type: 'select',
-      defaultValue: 'auto',
+      name: "preferredVariant",
+      type: "select",
+      defaultValue: "auto",
       options: [
-        { label: 'Auto', value: 'auto' },
-        { label: 'Original', value: 'original' },
-        { label: '2K WebP', value: '2k' },
-        { label: '1080 WebP', value: '1080' },
+        { label: "Auto", value: "auto" },
+        { label: "Original", value: "original" },
+        { label: "2K WebP", value: "2k" },
+        { label: "1080 WebP", value: "1080" },
       ],
       required: true,
     },
     {
-      name: 'digiUploader',
-      type: 'ui',
+      name: "digiUploader",
+      type: "ui",
       admin: {
         components: {
-          Field: '@/components/admin/DigiImageUploader#DigiImageUploader',
+          Field: "@/components/admin/DigiImageUploader#DigiImageUploader",
         },
       },
     },
     {
-      name: 'uploadStatus',
-      type: 'select',
-      defaultValue: 'draft',
+      name: "uploadStatus",
+      type: "select",
+      defaultValue: "draft",
       index: true,
       options: [
-        { label: 'Draft', value: 'draft' },
-        { label: 'Uploading', value: 'uploading' },
-        { label: 'Ready', value: 'ready' },
-        { label: 'Failed', value: 'failed' },
+        { label: "Draft", value: "draft" },
+        { label: "Uploading", value: "uploading" },
+        { label: "Ready", value: "ready" },
+        { label: "Failed", value: "failed" },
       ],
       required: true,
       access: {
@@ -151,34 +179,35 @@ export const ImageAssets: CollectionConfig = {
       },
     },
     {
-      name: 'storageProvider',
-      type: 'select',
-      defaultValue: 'digi_storage',
+      name: "storageProvider",
+      type: "select",
+      defaultValue: "digi_storage",
       options: [
-        { label: 'Digi Storage', value: 'digi_storage' },
-        { label: 'Hetzner storage', value: 'hetzner_storage' },
+        { label: "Digi Storage", value: "digi_storage" },
+        { label: "Hetzner storage", value: "hetzner_storage" },
       ],
       access: {
         read: internalFieldRead,
       },
       admin: {
         disabled: true,
-        description: 'Provider metadata is intentionally hidden from editors. Hetzner migration belongs in the storage layer.',
+        description:
+          "Provider metadata is intentionally hidden from editors. Hetzner migration belongs in the storage layer.",
       },
     },
     {
-      name: 'adminThumbnailUrl',
-      type: 'text',
-      label: 'Preview',
+      name: "adminThumbnailUrl",
+      type: "text",
+      label: "Preview",
       admin: {
         components: {
-          Cell: '@/components/admin/ImageAssetPreviewCell#ImageAssetPreviewCell',
-          Field: '@/components/admin/HiddenAdminField#HiddenAdminField',
+          Cell: "@/components/admin/ImageAssetPreviewCell#ImageAssetPreviewCell",
+          Field: "@/components/admin/HiddenAdminField#HiddenAdminField",
         },
         disableBulkEdit: true,
         disableGroupBy: true,
         disableListFilter: true,
-        position: 'sidebar',
+        position: "sidebar",
         readOnly: true,
       },
       access: {
@@ -186,8 +215,8 @@ export const ImageAssets: CollectionConfig = {
       },
     },
     {
-      name: 'originalFilename',
-      type: 'text',
+      name: "originalFilename",
+      type: "text",
       access: {
         read: internalFieldRead,
       },
@@ -196,8 +225,8 @@ export const ImageAssets: CollectionConfig = {
       },
     },
     {
-      name: 'mimeType',
-      type: 'text',
+      name: "mimeType",
+      type: "text",
       access: {
         read: internalFieldRead,
       },
@@ -206,8 +235,8 @@ export const ImageAssets: CollectionConfig = {
       },
     },
     {
-      name: 'filesize',
-      type: 'number',
+      name: "filesize",
+      type: "number",
       access: {
         read: internalFieldRead,
       },
@@ -216,8 +245,8 @@ export const ImageAssets: CollectionConfig = {
       },
     },
     {
-      name: 'width',
-      type: 'number',
+      name: "width",
+      type: "number",
       access: {
         read: internalFieldRead,
       },
@@ -226,8 +255,8 @@ export const ImageAssets: CollectionConfig = {
       },
     },
     {
-      name: 'height',
-      type: 'number',
+      name: "height",
+      type: "number",
       access: {
         read: internalFieldRead,
       },
@@ -236,8 +265,8 @@ export const ImageAssets: CollectionConfig = {
       },
     },
     {
-      name: 'variants',
-      type: 'group',
+      name: "variants",
+      type: "group",
       admin: {
         condition: () => false,
       },
@@ -246,28 +275,28 @@ export const ImageAssets: CollectionConfig = {
       },
       fields: [
         {
-          name: 'original',
-          type: 'group',
+          name: "original",
+          type: "group",
           fields: variantFields,
         },
         {
-          name: 'twoK',
-          label: '2K',
-          type: 'group',
+          name: "twoK",
+          label: "2K",
+          type: "group",
           fields: variantFields,
         },
         {
-          name: 'hd1080',
-          label: '1080',
-          type: 'group',
+          name: "hd1080",
+          label: "1080",
+          type: "group",
           fields: variantFields,
         },
         {
-          name: 'thumbnail',
-          type: 'group',
+          name: "thumbnail",
+          type: "group",
           fields: variantFields,
         },
       ],
     },
   ],
-}
+};

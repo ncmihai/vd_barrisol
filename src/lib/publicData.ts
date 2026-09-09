@@ -1,6 +1,9 @@
 import { getFallbackSiteData } from "@/lib/fallbackContent";
 import { localizedPaths, routeLabels, type Locale } from "@/lib/i18n";
 import { getDatabaseUrl } from "@/lib/databaseUrl";
+import { cache } from "react";
+import { unstable_cache } from "next/cache";
+import { validatePricingSettings } from "@/lib/pricing";
 import type {
   PublicAboutPage,
   PublicGalleryPage,
@@ -63,9 +66,11 @@ const imageFromAsset = (asset: unknown, fallback: PublicImage): PublicImage => {
 
   return {
     alt: nonEmptyString(item.alt, fallback.alt),
+    focalX: typeof item.focalX === "number" ? item.focalX : 50,
+    focalY: typeof item.focalY === "number" ? item.focalY : 50,
     height:
       typeof variant.height === "number" ? variant.height : fallback.height,
-    src: `/api/assets/images/${id}?variant=${preferredVariant}`,
+    src: `/api/assets/images/${id}?variant=${preferredVariant}&v=${encodeURIComponent(String(item.updatedAt || "1"))}`,
     width: typeof variant.width === "number" ? variant.width : fallback.width,
   };
 };
@@ -80,6 +85,11 @@ const nonEmptyString = (value: unknown, fallback: string) =>
   typeof value === "string" && value.trim() ? value.trim() : fallback;
 
 const navigationLabel = (href: string, locale: Locale, fallback: string) => {
+  if (
+    fallback &&
+    !["link", "section", "sectiune"].includes(fallback.toLowerCase())
+  )
+    return fallback;
   const normalizedHref = href.replace(/\/$/, "");
   const paths = localizedPaths[locale];
   const labels = routeLabels[locale];
@@ -87,6 +97,10 @@ const navigationLabel = (href: string, locale: Locale, fallback: string) => {
   if (normalizedHref === paths.home) return labels.home;
   if (normalizedHref === paths.gallery) return labels.gallery;
   if (normalizedHref === paths.about) return labels.about;
+  if (normalizedHref === paths.services)
+    return locale === "ro" ? "Servicii" : "Services";
+  if (normalizedHref === paths.architects)
+    return locale === "ro" ? "Arhitecti" : "Architects";
   if (normalizedHref === paths.privacy) {
     return locale === "ro" ? "Confidentialitate" : "Privacy";
   }
@@ -120,7 +134,10 @@ const shouldUseFallbackContent = () =>
   process.env.NEXT_PHASE === "phase-production-build" ||
   process.env.VDB_FORCE_STATIC_FALLBACK === "1";
 
-const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number): Promise<T> => {
+const withTimeout = async <T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+): Promise<T> => {
   let timeout: ReturnType<typeof setTimeout> | undefined;
 
   try {
@@ -128,7 +145,10 @@ const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number): Promise<T
       promise,
       new Promise<T>((_, reject) => {
         timeout = setTimeout(
-          () => reject(new Error(`Public data request timed out after ${timeoutMs}ms`)),
+          () =>
+            reject(
+              new Error(`Public data request timed out after ${timeoutMs}ms`),
+            ),
           timeoutMs,
         );
       }),
@@ -140,13 +160,11 @@ const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number): Promise<T
   }
 };
 
-export const getPublicSiteData = async (
-  locale: Locale,
-): Promise<PublicSiteData> => {
+const loadPublicSiteData = async (locale: Locale): Promise<PublicSiteData> => {
   const fallback = getFallbackSiteData(locale);
 
   if (shouldUseFallbackContent()) {
-    return fallback;
+    return unavailableData(locale);
   }
 
   try {
@@ -170,26 +188,74 @@ export const getPublicSiteData = async (
           pricingSettings,
           projects,
           testimonials,
+          services,
         ] = await Promise.all([
-          payload.findGlobal({ depth: 2, locale, slug: "site-settings" }),
-          payload.findGlobal({ depth: 1, locale, slug: "navigation-footer" }),
-          payload.findGlobal({ depth: 2, locale, slug: "home-page" }),
-          payload.findGlobal({ depth: 1, locale, slug: "gallery-page" }),
-          payload.findGlobal({ depth: 2, locale, slug: "about-page" }),
-          payload.findGlobal({ depth: 0, locale, slug: "pricing-settings" }),
+          payload.findGlobal({
+            depth: 2,
+            locale,
+            fallbackLocale: false,
+            slug: "site-settings",
+          }),
+          payload.findGlobal({
+            depth: 1,
+            locale,
+            fallbackLocale: false,
+            slug: "navigation-footer",
+          }),
+          payload.findGlobal({
+            depth: 2,
+            locale,
+            fallbackLocale: false,
+            slug: "home-page",
+          }),
+          payload.findGlobal({
+            depth: 1,
+            locale,
+            fallbackLocale: false,
+            slug: "gallery-page",
+          }),
+          payload.findGlobal({
+            depth: 2,
+            locale,
+            fallbackLocale: false,
+            slug: "about-page",
+          }),
+          payload.findGlobal({
+            depth: 0,
+            locale,
+            fallbackLocale: false,
+            slug: "pricing-settings",
+          }),
           payload.find({
             collection: "projects",
+            where: {
+              publication: {
+                in:
+                  process.env.VDB_CONTENT_MODE === "demo"
+                    ? ["published", "demo"]
+                    : ["published"],
+              },
+            },
+            fallbackLocale: false,
             depth: 2,
-            limit: 20,
+            limit: 200,
             locale,
             sort: "sortOrder",
           }),
           payload.find({
             collection: "testimonials",
+            where: { approved: { equals: true } },
+            fallbackLocale: false,
             depth: 2,
             limit: 20,
             locale,
             sort: "sortOrder",
+          }),
+          payload.findGlobal({
+            slug: "services",
+            locale,
+            fallbackLocale: false,
+            depth: 0,
           }),
         ]);
 
@@ -202,6 +268,7 @@ export const getPublicSiteData = async (
           projects,
           siteSettings,
           testimonials,
+          services,
         };
       })(),
       Number.isFinite(timeoutMs) && timeoutMs > 0 ? timeoutMs : 8000,
@@ -216,6 +283,7 @@ export const getPublicSiteData = async (
       projects,
       siteSettings,
       testimonials,
+      services,
     } = data;
 
     const settings = mapSiteSettings(asRecord(siteSettings), fallback.settings);
@@ -231,14 +299,40 @@ export const getPublicSiteData = async (
       .filter((testimonial) => testimonial.clientName && testimonial.quote);
 
     return {
+      contentStatus: "live",
+      pricingAvailable: validPublicPricing(pricingSettings),
+      services: {
+        items: (services.items || [])
+          .filter((item) => item.enabled && item.title && item.description)
+          .map((item) => ({
+            title: item.title,
+            description: item.description,
+            customQuote: item.customQuote !== false,
+          })),
+        architects:
+          services.architects?.enabled &&
+          services.architects.title &&
+          services.architects.description
+            ? {
+                title: services.architects.title,
+                description: services.architects.description,
+              }
+            : undefined,
+        process: (services.process || [])
+          .filter((item) => item.title && item.description)
+          .map((item) => ({
+            title: item.title,
+            description: item.description,
+          })),
+        faq: (services.faq || [])
+          .filter((item) => item.enabled && item.question && item.answer)
+          .map((item) => ({ question: item.question, answer: item.answer })),
+      },
       about,
       gallery,
       home,
       nav,
-      pricing: {
-        ...fallback.pricing,
-        ...asRecord(pricingSettings),
-      },
+      pricing: pricingSettings,
       projects: mappedProjects,
       settings,
       testimonials: mappedTestimonials,
@@ -249,9 +343,55 @@ export const getPublicSiteData = async (
       error instanceof Error ? error.message : error,
     );
 
-    return fallback;
+    throw error;
   }
 };
+
+const validPublicPricing = (
+  settings: import("@/lib/pricing").PricingSettings,
+) => {
+  try {
+    validatePricingSettings(settings);
+    return settings.approved === true;
+  } catch {
+    return false;
+  }
+};
+
+const unavailableData = (locale: Locale): PublicSiteData => {
+  const fallback = getFallbackSiteData(locale);
+  const demo = process.env.VDB_CONTENT_MODE === "demo";
+  return {
+    ...fallback,
+    contentStatus: demo ? "demo" : "unavailable",
+    pricingAvailable: demo,
+    home: { ...fallback.home, motionPreset: demo ? "stretch" : "off" },
+    pricing: demo ? fallback.pricing : {},
+    testimonials: [],
+    projects: demo
+      ? fallback.projects.map((project) => ({
+          ...project,
+          publication: "demo",
+        }))
+      : [],
+  };
+};
+
+const cachedPublicData = unstable_cache(
+  loadPublicSiteData,
+  ["public-site-v2"],
+  { revalidate: 60, tags: ["public-site"] },
+);
+export const getPublicSiteData = cache(
+  async (locale: Locale): Promise<PublicSiteData> => {
+    if (shouldUseFallbackContent()) return unavailableData(locale);
+    try {
+      return await cachedPublicData(locale);
+    } catch {
+      return unavailableData(locale);
+    }
+  },
+);
 
 const mapSiteSettings = (
   doc: AnyRecord,
@@ -301,13 +441,19 @@ const mapNavigation = (
   footerLinks:
     Array.isArray(doc.footerLinks) && doc.footerLinks.length > 0
       ? doc.footerLinks.map((link: AnyRecord) => {
-          const href = localizeInternalHref(nonEmptyString(link.href, "#"), locale);
+          const href = localizeInternalHref(
+            nonEmptyString(link.href, "#"),
+            locale,
+          );
           return {
             href,
             label: navigationLabel(
               href,
               locale,
-              locale === "ro" ? "Sectiune" : "Section",
+              nonEmptyString(
+                link.label,
+                locale === "ro" ? "Sectiune" : "Section",
+              ),
             ),
             newTab: Boolean(link.newTab),
           };
@@ -317,13 +463,19 @@ const mapNavigation = (
   headerLinks:
     Array.isArray(doc.headerLinks) && doc.headerLinks.length > 0
       ? doc.headerLinks.map((link: AnyRecord) => {
-          const href = localizeInternalHref(nonEmptyString(link.href, "#"), locale);
+          const href = localizeInternalHref(
+            nonEmptyString(link.href, "#"),
+            locale,
+          );
           return {
             href,
             label: navigationLabel(
               href,
               locale,
-              locale === "ro" ? "Sectiune" : "Section",
+              nonEmptyString(
+                link.label,
+                locale === "ro" ? "Sectiune" : "Section",
+              ),
             ),
           };
         })
@@ -341,6 +493,7 @@ const mapHomePage = (
   const slides = Array.isArray(hero.slides) ? hero.slides : [];
 
   return {
+    motionPreset: doc.motionPreset === "stretch" ? "stretch" : "off",
     calculatorCopy: nonEmptyString(calculator.copy, fallback.calculatorCopy),
     calculatorHeadline: nonEmptyString(
       calculator.headline,
@@ -425,6 +578,16 @@ const mapAboutPage = (
 };
 
 const mapProject = (doc: AnyRecord): PublicProject => ({
+  id: String(doc.id),
+  publication: doc.publication === "demo" ? "demo" : "published",
+  audience: nonEmptyString(doc.audience, ""),
+  finishId: nonEmptyString(doc.finishId, ""),
+  lightingId: nonEmptyString(doc.lightingId, ""),
+  details: nonEmptyString(doc.details, ""),
+  technicalDetails: nonEmptyString(doc.technicalDetails, ""),
+  images: (Array.isArray(doc.images) ? doc.images : [])
+    .map((image) => imageFromAsset(image, fallbackImage))
+    .filter((image) => image.src !== fallbackImage.src),
   areaSqm: typeof doc.areaSqm === "number" ? doc.areaSqm : undefined,
   ceilingType: nonEmptyString(doc.ceilingType, ""),
   city: nonEmptyString(doc.city, ""),
@@ -439,9 +602,7 @@ const mapTestimonial = (doc: AnyRecord): PublicTestimonial => ({
   city: nonEmptyString(doc.city, ""),
   clientName: nonEmptyString(doc.clientName, ""),
   headline: nonEmptyString(doc.headline, ""),
-  image: doc.image
-    ? imageFromAsset(doc.image, fallbackImage)
-    : undefined,
+  image: doc.image ? imageFromAsset(doc.image, fallbackImage) : undefined,
   quote: nonEmptyString(doc.quote, ""),
 });
 

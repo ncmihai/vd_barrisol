@@ -1,15 +1,103 @@
 :root {
+  --focus-ring: #274b82;
   --color-neutral: #e9e3df;
   --color-orange: #ff7a30;
   --color-blue: #465c88;
   --color-black: #000000;
-  --color-ink: #171412;
-  --color-muted: #6f6762;
-  --color-surface: #f7f3ef;
+  --color-ink: #171717;
+  --color-muted: #53565b;
+  --color-surface: #f5f6f7;
   --color-white: #ffffff;
   --radius: 8px;
   --shadow: 0 24px 60px rgb(0 0 0 / 14%);
   --max-width: 1180px;
+}
+
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 1rem;
+  z-index: 1000;
+  background: white;
+  color: black;
+  padding: 1rem;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 4px;
+}
+.demo-notice {
+  padding: 0.5rem 1rem;
+  margin: 0;
+  text-align: center;
+  background: #edf1f6;
+  font-size: 0.875rem;
+}
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 2rem;
+  padding-block: 1.5rem;
+}
+.faq-item {
+  border-bottom: 1px solid #c8c8c8;
+  padding-block: 1.25rem;
+}
+.faq-item summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.portfolio-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.portfolio-filters button {
+  padding: 0.75rem;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+}
+.portfolio-filters button[aria-pressed="true"] {
+  border-bottom-color: #000;
+  font-weight: 700;
+}
+.preserve-lines {
+  white-space: pre-line;
+}
+.loading-skeleton {
+  min-height: 12rem;
+  background: #edf1f6;
+  border-radius: 4px;
+}
+.estimate-step-panel {
+  min-width: 0;
+}
+.estimate-result {
+  align-self: start;
+}
+.lead-form__message,
+.form-status {
+  overflow-wrap: anywhere;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .estimate-step-content,
+  .option-grid {
+    animation: panel-enter 180ms ease-out;
+  }
+}
+@keyframes panel-enter {
+  from {
+    opacity: 0.5;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 * {
@@ -23,13 +111,7 @@ html {
 }
 
 body {
-  background:
-    linear-gradient(
-      180deg,
-      rgb(233 227 223 / 90%),
-      rgb(247 243 239 / 100%) 34rem
-    ),
-    var(--color-neutral);
+  background: #ffffff;
   font-family:
     Inter,
     ui-sans-serif,
@@ -197,7 +279,7 @@ button {
   pointer-events: none;
   position: absolute;
   transform-origin: center top;
-  z-index: 3;
+  z-index: 1;
 }
 
 .hero-stretch-reveal span {
@@ -455,8 +537,8 @@ button {
 }
 
 .section--calculator {
-  background: linear-gradient(180deg, var(--color-black) 0 42%, var(--color-neutral) 42% 100%);
-  color: var(--color-white);
+  background: #f4f5f6;
+  color: var(--color-ink);
   padding: 3rem 1rem 4.25rem;
 }
 
@@ -464,7 +546,7 @@ button {
   align-items: start;
   display: grid;
   gap: 1.35rem;
-  grid-template-columns: 0.72fr 1.28fr;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .section--calculator .section-heading {
@@ -473,11 +555,11 @@ button {
 }
 
 .section--calculator .section-heading h2 {
-  color: var(--color-white);
+  color: var(--color-ink);
 }
 
 .section--calculator .section-heading p:not(.eyebrow) {
-  color: rgb(255 255 255 / 72%);
+  color: #484848;
 }
 
 .section-heading {
@@ -512,7 +594,7 @@ button {
 .estimate-tool {
   background: var(--color-white);
   border-radius: var(--radius);
-  box-shadow: 0 28px 70px rgb(0 0 0 / 24%);
+  box-shadow: none;
   color: var(--color-ink);
   display: grid;
   gap: 1.1rem;
@@ -769,11 +851,9 @@ button {
 
 .estimate-result {
   align-content: start;
-  background:
-    linear-gradient(180deg, rgb(70 92 136 / 96%), rgb(0 0 0 / 96%)),
-    var(--color-blue);
+  background: #edf1f6;
   border-radius: var(--radius);
-  color: var(--color-white);
+  color: #171717;
   display: grid;
   gap: 0.75rem;
   padding: 1.2rem;
@@ -782,24 +862,24 @@ button {
 }
 
 .estimate-result span {
-  color: rgb(255 255 255 / 72%);
+  color: #465c88;
   font-weight: 800;
 }
 
 .estimate-result strong {
-  color: var(--color-white);
+  color: #171717;
   font-size: 2rem;
   line-height: 1.05;
 }
 
 .estimate-result em {
-  color: rgb(255 255 255 / 78%);
+  color: #465c88;
   font-style: normal;
   font-weight: 800;
 }
 
 .estimate-result p {
-  color: rgb(255 255 255 / 76%);
+  color: #484848;
   line-height: 1.55;
   margin: 0;
 }
@@ -815,7 +895,7 @@ button {
   background: rgb(255 255 255 / 10%);
   border: 1px solid rgb(255 255 255 / 14%);
   border-radius: 999px;
-  color: rgb(255 255 255 / 82%);
+  color: #343434;
   font-weight: 800;
   padding: 0.45rem 0.6rem;
 }
@@ -1302,7 +1382,9 @@ button {
   }
 
   .hero-caption span {
-    display: none;
+    display: block;
+    font-size: 0.875rem;
+    max-width: 65%;
   }
 
   .section,
@@ -1311,11 +1393,7 @@ button {
   }
 
   .section--calculator {
-    background: linear-gradient(
-      180deg,
-      var(--color-black) 0 32%,
-      var(--color-neutral) 32% 100%
-    );
+    background: #f4f5f6;
     padding: 2.6rem 1rem 3.5rem;
   }
 

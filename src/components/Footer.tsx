@@ -23,7 +23,7 @@ export function Footer({
   ].filter((link): link is { href: string; label: string } => Boolean(link));
 
   return (
-    <footer className="site-footer">
+    <footer className="site-footer" id="contact">
       <div className="site-footer__brand">
         <Link href={localizedPaths[locale].home}>{settings.brandName}</Link>
         <p>{nav.footerText}</p>

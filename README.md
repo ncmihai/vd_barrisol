@@ -1,5 +1,7 @@
 # VD BARRISOL
 
+Current beta audit and migration prerequisites: [BETA_AUDIT.md](BETA_AUDIT.md). Earlier phase summaries overstated completion. Read this handoff before deploying the new schema.
+
 Next.js + Payload CMS website for VD BARRISOL, a premium stretch ceiling company based in Constanta and nearby localities.
 
 - Temporary Vercel domain: `https://vdbarrisol.vercel.app`
@@ -24,7 +26,7 @@ npm install
 npm run dev
 ```
 
-The public site has fallback content when `DATABASE_URL` is missing. Payload admin and lead saving require a real database.
+When the database is unavailable, the public site retains contact information but suppresses numeric pricing and sample testimonials. Set `VDB_CONTENT_MODE=demo` explicitly for illustrative development content. Payload admin and lead saving require a real database.
 
 ## Useful Scripts
 

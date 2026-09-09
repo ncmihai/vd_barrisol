@@ -2,6 +2,10 @@
 
 Last updated: 2026-09-09
 
+## Audit Correction
+
+The historical "phase complete" paragraphs below described partial passes and must not be used as evidence of all exit criteria being satisfied. See `BETA_AUDIT.md` for the current crosswalk, implemented corrections, verification and deployment prerequisites. The audit starting at `0cdee16` adds real API/database/browser coverage and the missing CMS/workflow features. Production migration, publishing, real media/email verification and owner acceptance remain separate gates.
+
 ## Authoritative Beta Plan
 
 `VD_BARRISOL_BETA_PLAN.md` is now the source of truth for implementation planning. It supersedes older sequencing assumptions in this tracker, especially the immediate Hetzner migration and the earlier GSAP-first direction. The current execution order starts with Phase 0 baseline verification, then Phase 1 public UI/journey corrections.
@@ -91,13 +95,13 @@ The completed items below describe the alpha/current implementation. For beta wo
 
 ## CMS Content Checklist
 
-- [ ] Create first admin user at `/admin`.
+- [x] First admin user already exists, confirmed by the owner.
 - [x] Add real public phone number.
 - [x] Add real public email.
 - [x] Add real WhatsApp number in international format, e.g. `407XXXXXXXX`.
 - [x] Add Facebook and Instagram links.
 - [x] Add service city list.
-- [ ] Confirm whether visible company details should include `VD BARRISOL S.R.L.` and `CUI 51496619`.
+- [x] Keep `VD BARRISOL S.R.L.` and `CUI 51496619` visible, confirmed by the owner.
 - [ ] Upload final logo file when available.
 - [ ] Upload real hero photos.
 - [ ] Add at least 4 real projects with city, area, ceiling type, summary, and photos.
@@ -343,7 +347,7 @@ These are release checks still requiring isolated infrastructure or owner coordi
 
 ### Phase 7 exit status
 
-Phase 7 is complete for the reproducible code/CI release gate. The application is ready for a controlled preview deployment and owner acceptance review. Phase 8 self-hosting remains future work and is not part of the beta.
+Phase 7 is complete for the reproducible code/CI release gate. The final local CMS suite passed against disposable Postgres. Production migrations, deployment checks and owner acceptance remain release work. See `BETA_AUDIT.md` for verified results and the controlled deployment sequence. Phase 8 self-hosting remains future work and is not part of the beta.
 
 ## Quality Bar
 

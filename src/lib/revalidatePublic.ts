@@ -1,4 +1,4 @@
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 const publicPaths = [
   "/",
@@ -11,6 +11,13 @@ const publicPaths = [
 ];
 
 export const revalidatePublicSite = async () => {
+  try {
+    revalidateTag("public-site", { expire: 0 });
+    revalidatePath("/[locale]", "layout");
+    revalidatePath("/sitemap.xml");
+  } catch {
+    /* CLI migrations have no Next request context. */
+  }
   for (const path of publicPaths) {
     try {
       revalidatePath(path);
