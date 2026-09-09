@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { headers } from 'next/headers'
 
 import { getSiteUrl } from '@/lib/siteUrl'
 
@@ -10,9 +11,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const requestHeaders = await headers()
+  const locale = requestHeaders.get('x-vd-locale') === 'en' ? 'en' : 'ro'
+
   return (
-    <html lang="ro">
+    <html lang={locale}>
       <body>{children}</body>
     </html>
   )

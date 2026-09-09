@@ -1,5 +1,5 @@
 import { getFallbackSiteData } from "@/lib/fallbackContent";
-import { localizedPaths, type Locale } from "@/lib/i18n";
+import { localizedPaths, routeLabels, type Locale } from "@/lib/i18n";
 import { getDatabaseUrl } from "@/lib/databaseUrl";
 import type {
   PublicAboutPage,
@@ -79,6 +79,24 @@ const whatsappHref = (number?: unknown) => {
 const nonEmptyString = (value: unknown, fallback: string) =>
   typeof value === "string" && value.trim() ? value.trim() : fallback;
 
+const navigationLabel = (href: string, locale: Locale, fallback: string) => {
+  const normalizedHref = href.replace(/\/$/, "");
+  const paths = localizedPaths[locale];
+  const labels = routeLabels[locale];
+
+  if (normalizedHref === paths.home) return labels.home;
+  if (normalizedHref === paths.gallery) return labels.gallery;
+  if (normalizedHref === paths.about) return labels.about;
+  if (normalizedHref === paths.privacy) {
+    return locale === "ro" ? "Confidentialitate" : "Privacy";
+  }
+  if (normalizedHref === paths.cookies) return "Cookies";
+  if (normalizedHref === "#calculator") return labels.calculator;
+  if (normalizedHref === "#contact") return labels.contact;
+
+  return fallback;
+};
+
 const internalRouteKeysBySlug = new Map<string, LocalizedPathKey>(
   Object.values(localizedPaths).flatMap((paths) =>
     Object.entries(paths).map(
@@ -154,12 +172,12 @@ export const getPublicSiteData = async (
     const home = mapHomePage(asRecord(homePage), fallback.home);
     const gallery = mapGalleryPage(asRecord(galleryPage), fallback.gallery);
     const about = mapAboutPage(asRecord(aboutPage), fallback.about);
-    const mappedProjects = projects.docs.map((project) =>
-      mapProject(asRecord(project), fallback.projects[0]),
-    );
-    const mappedTestimonials = testimonials.docs.map((testimonial) =>
-      mapTestimonial(asRecord(testimonial), fallback.testimonials[0]),
-    );
+    const mappedProjects = projects.docs
+      .map((project) => mapProject(asRecord(project)))
+      .filter((project) => project.title && project.summary);
+    const mappedTestimonials = testimonials.docs
+      .map((testimonial) => mapTestimonial(asRecord(testimonial)))
+      .filter((testimonial) => testimonial.clientName && testimonial.quote);
 
     return {
       about,
@@ -170,12 +188,9 @@ export const getPublicSiteData = async (
         ...fallback.pricing,
         ...asRecord(pricingSettings),
       },
-      projects: mappedProjects.length > 0 ? mappedProjects : fallback.projects,
+      projects: mappedProjects,
       settings,
-      testimonials:
-        mappedTestimonials.length > 0
-          ? mappedTestimonials
-          : fallback.testimonials,
+      testimonials: mappedTestimonials,
     };
   } catch (error) {
     console.warn(
@@ -234,19 +249,33 @@ const mapNavigation = (
   creditLabel: nonEmptyString(doc.creditLabel, fallback.creditLabel),
   footerLinks:
     Array.isArray(doc.footerLinks) && doc.footerLinks.length > 0
-      ? doc.footerLinks.map((link: AnyRecord) => ({
-          href: localizeInternalHref(nonEmptyString(link.href, "#"), locale),
-          label: nonEmptyString(link.label, "Link"),
-          newTab: Boolean(link.newTab),
-        }))
+      ? doc.footerLinks.map((link: AnyRecord) => {
+          const href = localizeInternalHref(nonEmptyString(link.href, "#"), locale);
+          return {
+            href,
+            label: navigationLabel(
+              href,
+              locale,
+              locale === "ro" ? "Sectiune" : "Section",
+            ),
+            newTab: Boolean(link.newTab),
+          };
+        })
       : fallback.footerLinks,
   footerText: nonEmptyString(doc.footerText, fallback.footerText),
   headerLinks:
     Array.isArray(doc.headerLinks) && doc.headerLinks.length > 0
-      ? doc.headerLinks.map((link: AnyRecord) => ({
-          href: localizeInternalHref(nonEmptyString(link.href, "#"), locale),
-          label: nonEmptyString(link.label, "Link"),
-        }))
+      ? doc.headerLinks.map((link: AnyRecord) => {
+          const href = localizeInternalHref(nonEmptyString(link.href, "#"), locale);
+          return {
+            href,
+            label: navigationLabel(
+              href,
+              locale,
+              locale === "ro" ? "Sectiune" : "Section",
+            ),
+          };
+        })
       : fallback.headerLinks,
 });
 
@@ -344,30 +373,25 @@ const mapAboutPage = (
   };
 };
 
-const mapProject = (
-  doc: AnyRecord,
-  fallback: PublicProject,
-): PublicProject => ({
-  areaSqm: typeof doc.areaSqm === "number" ? doc.areaSqm : fallback.areaSqm,
-  ceilingType: nonEmptyString(doc.ceilingType, fallback.ceilingType || ""),
-  city: nonEmptyString(doc.city, fallback.city || ""),
-  image: imageFromAsset(doc.mainImage, fallback.image),
-  slug: nonEmptyString(doc.slug, fallback.slug),
-  summary: nonEmptyString(doc.summary, fallback.summary),
-  title: nonEmptyString(doc.title, fallback.title),
+const mapProject = (doc: AnyRecord): PublicProject => ({
+  areaSqm: typeof doc.areaSqm === "number" ? doc.areaSqm : undefined,
+  ceilingType: nonEmptyString(doc.ceilingType, ""),
+  city: nonEmptyString(doc.city, ""),
+  featured: Boolean(doc.featured),
+  image: imageFromAsset(doc.mainImage, fallbackImage),
+  slug: nonEmptyString(doc.slug, ""),
+  summary: nonEmptyString(doc.summary, ""),
+  title: nonEmptyString(doc.title, ""),
 });
 
-const mapTestimonial = (
-  doc: AnyRecord,
-  fallback: PublicTestimonial,
-): PublicTestimonial => ({
-  city: nonEmptyString(doc.city, fallback.city || ""),
-  clientName: nonEmptyString(doc.clientName, fallback.clientName),
-  headline: nonEmptyString(doc.headline, fallback.headline || ""),
+const mapTestimonial = (doc: AnyRecord): PublicTestimonial => ({
+  city: nonEmptyString(doc.city, ""),
+  clientName: nonEmptyString(doc.clientName, ""),
+  headline: nonEmptyString(doc.headline, ""),
   image: doc.image
-    ? imageFromAsset(doc.image, fallback.image || fallbackImage)
+    ? imageFromAsset(doc.image, fallbackImage)
     : undefined,
-  quote: nonEmptyString(doc.quote, fallback.quote),
+  quote: nonEmptyString(doc.quote, ""),
 });
 
 const fallbackImage: PublicImage = {

@@ -86,10 +86,32 @@ export default async function Home({ params }: PageProps) {
   return (
     <>
       <script
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
         type="application/ld+json"
       />
       <HeroCarousel home={data.home} locale={locale} settings={data.settings} />
+
+      <section className="section section--intro">
+        <div className="section__inner intro-grid">
+          <div>
+            <p className="eyebrow">
+              {locale === "ro" ? "Solutii pentru interior" : "Interior solutions"}
+            </p>
+            <h2>
+              {locale === "ro"
+                ? "Finisaj curat. Lumina integrata. Montaj precis."
+                : "Clean finish. Integrated light. Precise installation."}
+            </h2>
+          </div>
+          <p>
+            {locale === "ro"
+              ? "Fiecare proiect incepe cu masuratori clare, alegerea finisajului potrivit si o discutie despre lumina, acces si detaliile de montaj."
+              : "Every project starts with clear measurements, the right finish, and a practical discussion about light, access, and installation details."}
+          </p>
+        </div>
+      </section>
 
       <section className="section section--calculator" id="calculator">
         <div className="section__inner calculator-layout">
@@ -106,23 +128,6 @@ export default async function Home({ params }: PageProps) {
             serviceCities={data.settings.serviceCities}
             whatsappHref={whatsappHref}
           />
-        </div>
-      </section>
-
-      <section className="section section--intro">
-        <div className="section__inner intro-grid">
-          <div>
-            <h2>
-              {locale === "ro"
-                ? "Finisaj curat. Lumina integrata. Montaj precis."
-                : "Clean finish. Integrated light. Precise installation."}
-            </h2>
-          </div>
-          <p>
-            {locale === "ro"
-              ? "Fiecare proiect incepe cu masuratori clare, alegerea finisajului potrivit si o discutie despre lumina, acces si detaliile de montaj."
-              : "Every project starts with clear measurements, the right finish, and a practical discussion about light, access, and installation details."}
-          </p>
         </div>
       </section>
 
@@ -176,15 +181,30 @@ export default async function Home({ params }: PageProps) {
               {locale === "ro" ? "Vezi galeria" : "View gallery"}
             </a>
           </div>
-          <ProjectGrid projects={data.projects.slice(0, 2)} />
+          {data.projects.length > 0 ? (
+            <ProjectGrid
+              locale={locale}
+              projects={(data.projects.filter((project) => project.featured).length > 0
+                ? data.projects.filter((project) => project.featured)
+                : data.projects).slice(0, 2)}
+            />
+          ) : (
+            <p className="content-empty">
+              {locale === "ro"
+                ? "Exemplele de proiecte vor fi adaugate aici."
+                : "Project examples will be added here."}
+            </p>
+          )}
         </div>
       </section>
 
-      <section className="section section--testimonials">
-        <div className="section__inner">
-          <TestimonialList testimonials={data.testimonials.slice(0, 2)} />
-        </div>
-      </section>
+      {data.testimonials.length > 0 && (
+        <section className="section section--testimonials">
+          <div className="section__inner">
+            <TestimonialList testimonials={data.testimonials.slice(0, 2)} />
+          </div>
+        </section>
+      )}
     </>
   );
 }

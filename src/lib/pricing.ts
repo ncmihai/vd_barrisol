@@ -33,6 +33,13 @@ export type EstimateInput = {
   squareMeters: number
 }
 
+export class PricingValidationError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'PricingValidationError'
+  }
+}
+
 export type EstimateResult = {
   baseRon: number
   estimateEurMax: number
@@ -73,6 +80,40 @@ const findCityFee = (fees: CityFee[] | null | undefined, city?: string) => {
 
 const roundCurrency = (value: number) => Math.round(value)
 
+export const validateEstimateInput = (
+  input: EstimateInput,
+  settings: PricingSettings,
+): EstimateInput => {
+  const squareMeters = Number(input.squareMeters)
+  const ceilingType = findOption(settings.ceilingTypes, input.ceilingType)
+  const lighting = findOption(settings.lightingOptions, input.lighting)
+  const complexity = findOption(settings.complexityOptions, input.complexity)
+
+  if (!Number.isFinite(squareMeters) || squareMeters <= 0 || squareMeters > 10000) {
+    throw new PricingValidationError('Square meters must be between 0 and 10000.')
+  }
+
+  if (!ceilingType?.value || ceilingType.value !== input.ceilingType) {
+    throw new PricingValidationError('The selected ceiling finish is not available.')
+  }
+
+  if (!lighting?.value || lighting.value !== input.lighting) {
+    throw new PricingValidationError('The selected lighting option is not available.')
+  }
+
+  if (!complexity?.value || complexity.value !== input.complexity) {
+    throw new PricingValidationError('The selected room detail option is not available.')
+  }
+
+  return {
+    ceilingType: input.ceilingType,
+    city: typeof input.city === 'string' ? input.city.trim().slice(0, 120) : '',
+    complexity: input.complexity,
+    lighting: input.lighting,
+    squareMeters: Math.round(squareMeters * 100) / 100,
+  }
+}
+
 export const calculateSquareMetersFromDimensions = (lengthMeters: number, widthMeters: number) => {
   const length = asPositiveNumber(lengthMeters, 0)
   const width = asPositiveNumber(widthMeters, 0)
@@ -84,19 +125,20 @@ export const calculateEstimate = (
   input: EstimateInput,
   settings: PricingSettings,
 ): EstimateResult => {
-  const squareMeters = asPositiveNumber(input.squareMeters, 1)
+  const validatedInput = validateEstimateInput(input, settings)
+  const squareMeters = validatedInput.squareMeters
   const basePriceRonPerSqm = asPositiveNumber(settings.basePriceRonPerSqm, 180)
   const minimumProjectRon = asNonNegativeNumber(settings.minimumProjectRon, 1500)
   const eurRate = asPositiveNumber(settings.eurRate, 5)
   const rangePercent = Math.min(60, asNonNegativeNumber(settings.rangePercent, 15)) / 100
-  const ceilingType = findOption(settings.ceilingTypes, input.ceilingType)
-  const lighting = findOption(settings.lightingOptions, input.lighting)
-  const complexity = findOption(settings.complexityOptions, input.complexity)
-  const cityFee = findCityFee(settings.cityFees, input.city)
+  const ceilingType = findOption(settings.ceilingTypes, validatedInput.ceilingType)
+  const lighting = findOption(settings.lightingOptions, validatedInput.lighting)
+  const complexity = findOption(settings.complexityOptions, validatedInput.complexity)
+  const cityFee = findCityFee(settings.cityFees, validatedInput.city)
   const travelFeeRon =
     cityFee?.fixedRon !== undefined && cityFee.fixedRon !== null
       ? asNonNegativeNumber(cityFee.fixedRon)
-      : input.city?.trim()
+      : validatedInput.city?.trim()
         ? asNonNegativeNumber(settings.fallbackTravelFeeRon, 0)
         : 0
   const ceilingMultiplier = asPositiveNumber(ceilingType?.multiplier, 1)

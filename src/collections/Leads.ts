@@ -10,7 +10,7 @@ export const Leads: CollectionConfig = {
     useAsTitle: 'name',
   },
   access: {
-    create: () => true,
+    create: authenticated,
     delete: admins,
     read: authenticated,
     update: authenticated,

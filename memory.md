@@ -1,6 +1,14 @@
 # VD BARRISOL Memory
 
-Last updated: 2026-06-06
+Last updated: 2026-09-09
+
+## Current Planning Source
+
+- `VD_BARRISOL_BETA_PLAN.md` is the authoritative plan for the alpha-to-beta work.
+- It is based on a source review and visual evidence captured on 2026-09-09. Findings marked as observed still need verification against the current checkout before implementation.
+- Execute one phase at a time, starting with Phase 0. Do not treat historical checks as current verification.
+- The beta stays on Vercel, Neon, and Digi. Future self-hosting is Phase 8 and is outside the beta release.
+- Motion is the selected animation direction in the plan. Do not install or implement it until the Phase 0/Phase 1 baseline and UI decisions justify it.
 
 ## Working Rules
 

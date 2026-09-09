@@ -23,6 +23,7 @@ const copy = {
     details: 'Details',
     dimensions: 'Length x width',
     disclaimer: 'Approximate estimate',
+    invalidEstimate: 'Complete the required fields to see an estimate.',
     email: 'Email',
     factors: 'Included factors',
     lighting: 'Lighting',
@@ -56,6 +57,7 @@ const copy = {
     details: 'Detalii',
     dimensions: 'Lungime x latime',
     disclaimer: 'Estimare aproximativa',
+    invalidEstimate: 'Completeaza campurile obligatorii pentru a vedea estimarea.',
     email: 'Email',
     factors: 'Factori inclusi',
     lighting: 'Iluminat',
@@ -194,14 +196,25 @@ export function EstimateCalculator({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showLeadForm, setShowLeadForm] = useState(false)
   const [status, setStatus] = useState<'idle' | 'sent' | 'error'>('idle')
-  const estimate = useMemo(() => calculateEstimate(input, pricing), [input, pricing])
+  const estimate = useMemo(() => {
+    try {
+      return calculateEstimate(input, pricing)
+    } catch {
+      return null
+    }
+  }, [input, pricing])
+  const hasValidEstimate = Boolean(estimate)
   const ceilingType = findOption(pricing.ceilingTypes, input.ceilingType)
   const lighting = findOption(pricing.lightingOptions, input.lighting)
   const complexity = findOption(pricing.complexityOptions, input.complexity)
-  const estimateRon = formatCurrencyRange(estimate.estimateRonMin, estimate.estimateRonMax, 'RON')
-  const estimateEur = formatCurrencyRange(estimate.estimateEurMin, estimate.estimateEurMax, 'EUR')
+  const estimateRon = estimate
+    ? formatCurrencyRange(estimate.estimateRonMin, estimate.estimateRonMax, 'RON')
+    : labels.invalidEstimate
+  const estimateEur = estimate
+    ? formatCurrencyRange(estimate.estimateEurMin, estimate.estimateEurMax, 'EUR')
+    : ''
   const factorChips = [
-    `${labels.surface}: ${formatNumber(input.squareMeters)} ${labels.squareMeterUnit}`,
+    `${labels.surface}: ${Number.isFinite(input.squareMeters) ? `${formatNumber(input.squareMeters)} ${labels.squareMeterUnit}` : '—'}`,
     ceilingType?.label || labels.ceilingType,
     lighting?.label || labels.lighting,
     complexity?.label || labels.complexity,
@@ -253,7 +266,7 @@ export function EstimateCalculator({
     setDimensions(updated)
     setInput((currentInput) => ({
       ...currentInput,
-      squareMeters: squareMeters || currentInput.squareMeters,
+      squareMeters,
     }))
   }
 
@@ -269,6 +282,7 @@ export function EstimateCalculator({
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    if (!estimate) return
     setIsSubmitting(true)
     setStatus('idle')
 
@@ -355,7 +369,7 @@ export function EstimateCalculator({
                     min="1"
                     onChange={(event) => updateInput({ squareMeters: Number(event.target.value) })}
                     type="number"
-                    value={input.squareMeters}
+                    value={Number.isFinite(input.squareMeters) ? input.squareMeters : ''}
                   />
                 </label>
               ) : (
@@ -367,7 +381,7 @@ export function EstimateCalculator({
                       onChange={(event) => updateDimensions({ length: Number(event.target.value) })}
                       step="0.1"
                       type="number"
-                      value={dimensions.length}
+                      value={Number.isFinite(dimensions.length) ? dimensions.length : ''}
                     />
                   </label>
                   <label className="estimate-field">
@@ -377,7 +391,7 @@ export function EstimateCalculator({
                       onChange={(event) => updateDimensions({ width: Number(event.target.value) })}
                       step="0.1"
                       type="number"
-                      value={dimensions.width}
+                      value={Number.isFinite(dimensions.width) ? dimensions.width : ''}
                     />
                   </label>
                   <div className="dimension-result">
@@ -392,10 +406,11 @@ export function EstimateCalculator({
           )}
 
           {activeStep === 1 && (
-            <div className="option-grid">
+            <div aria-label={labels.ceilingType} className="option-grid" role="group">
               {(pricing.ceilingTypes || []).map((option) => (
                 <button
                   className={option.value === input.ceilingType ? 'option-card is-selected' : 'option-card'}
+                  aria-pressed={option.value === input.ceilingType}
                   key={optionKey(option)}
                   onClick={() => updateInput({ ceilingType: option.value || '' })}
                   type="button"
@@ -408,10 +423,11 @@ export function EstimateCalculator({
           )}
 
           {activeStep === 2 && (
-            <div className="option-grid">
+            <div aria-label={labels.lighting} className="option-grid" role="group">
               {(pricing.lightingOptions || []).map((option) => (
                 <button
                   className={option.value === input.lighting ? 'option-card is-selected' : 'option-card'}
+                  aria-pressed={option.value === input.lighting}
                   key={optionKey(option)}
                   onClick={() => updateInput({ lighting: option.value || '' })}
                   type="button"
@@ -425,10 +441,11 @@ export function EstimateCalculator({
 
           {activeStep === 3 && (
             <div className="estimate-step-content">
-              <div className="option-grid">
+              <div aria-label={labels.complexity} className="option-grid" role="group">
                 {(pricing.complexityOptions || []).map((option) => (
                   <button
                     className={option.value === input.complexity ? 'option-card is-selected' : 'option-card'}
+                    aria-pressed={option.value === input.complexity}
                     key={optionKey(option)}
                     onClick={() => updateInput({ complexity: option.value || '' })}
                     type="button"
@@ -487,7 +504,7 @@ export function EstimateCalculator({
 
       <aside className="estimate-result">
         <span>{labels.result}</span>
-        <strong>{estimateRon}</strong>
+        <strong aria-live="polite">{estimateRon}</strong>
         <em>{estimateEur}</em>
         <div className="estimate-factors" aria-label={labels.factors}>
           {factorChips.map((factor) => (
@@ -496,10 +513,17 @@ export function EstimateCalculator({
         </div>
         <p>{pricing.disclaimer || labels.disclaimer}</p>
         <div className="estimate-actions">
-          <a className="button button--dark" href={prefilledWhatsappHref}>
+          <a
+            aria-disabled={!hasValidEstimate}
+            className={hasValidEstimate ? 'button button--dark' : 'button button--dark is-disabled'}
+            href={hasValidEstimate ? prefilledWhatsappHref : undefined}
+            onClick={(event) => {
+              if (!hasValidEstimate) event.preventDefault()
+            }}
+          >
             {labels.whatsapp}
           </a>
-          <button className="button button--primary" onClick={() => setShowLeadForm(true)} type="button">
+          <button className="button button--primary" disabled={!hasValidEstimate} onClick={() => setShowLeadForm(true)} type="button">
             {labels.showLeadForm}
           </button>
         </div>

@@ -57,7 +57,7 @@ export default async function GaleriePage({ params }: PageProps) {
       </section>
       <section className="section">
         <div className="section__inner">
-          <ProjectGrid projects={data.projects} />
+          <ProjectGrid locale={locale} projects={data.projects} />
         </div>
       </section>
       <section className="section section--testimonials">

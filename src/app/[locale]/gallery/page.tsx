@@ -57,18 +57,28 @@ export default async function GalleryPage({ params }: PageProps) {
       </section>
       <section className="section">
         <div className="section__inner">
-          <ProjectGrid projects={data.projects} />
+          {data.projects.length > 0 ? (
+            <ProjectGrid locale={locale} projects={data.projects} />
+          ) : (
+            <p className="content-empty">
+              {locale === 'ro'
+                ? 'Proiectele vor fi adaugate aici dupa aprobarea continutului.'
+                : 'Projects will be added here after content approval.'}
+            </p>
+          )}
         </div>
       </section>
-      <section className="section section--testimonials">
-        <div className="section__inner">
-          <div className="section-heading">
-            <p className="eyebrow">{locale === 'ro' ? 'Testimoniale' : 'Testimonials'}</p>
-            <h2>{locale === 'ro' ? 'Ce spun clientii' : 'Client notes'}</h2>
+      {data.testimonials.length > 0 && (
+        <section className="section section--testimonials">
+          <div className="section__inner">
+            <div className="section-heading">
+              <p className="eyebrow">{locale === 'ro' ? 'Testimoniale' : 'Testimonials'}</p>
+              <h2>{locale === 'ro' ? 'Ce spun clientii' : 'Client notes'}</h2>
+            </div>
+            <TestimonialList testimonials={data.testimonials} />
           </div>
-          <TestimonialList testimonials={data.testimonials} />
-        </div>
-      </section>
+        </section>
+      )}
     </>
   )
 }

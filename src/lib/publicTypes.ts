@@ -80,6 +80,7 @@ export type PublicProject = {
   areaSqm?: number;
   ceilingType?: string;
   city?: string;
+  featured?: boolean;
   image: PublicImage;
   slug: string;
   summary: string;

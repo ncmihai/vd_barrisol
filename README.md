@@ -31,6 +31,7 @@ The public site has fallback content when `DATABASE_URL` is missing. Payload adm
 - `npm run dev` starts the site locally.
 - `npm run build` builds the production app.
 - `npm run lint` runs ESLint.
+- `npm run typecheck` runs TypeScript without emitting files.
 - `npm run test:int` runs pricing tests.
 - `npm run generate:types` regenerates Payload types.
 - `npm run generate:importmap` regenerates the Payload admin import map.
@@ -44,6 +45,8 @@ The public site has fallback content when `DATABASE_URL` is missing. Payload adm
 - `/en/gallery`
 - `/ro/despre`
 - `/en/about`
+- `/ro/proiecte/[slug]`
+- `/en/projects/[slug]`
 - `/ro/confidentialitate`
 - `/en/privacy`
 - `/ro/cookies`
@@ -181,3 +184,26 @@ Only use `migrate:fresh` on disposable databases. It drops all data.
 - Confirm VAT wording.
 - Add real testimonials approved for public use.
 - Have privacy/cookie text reviewed before public launch.
+
+## Controlled Beta Release Checklist
+
+Run locally before requesting a Vercel deployment:
+
+```bash
+npm ci
+npm run lint
+npm run typecheck
+npm run test:int
+PAYLOAD_SECRET=local-build-secret VDB_FORCE_STATIC_FALLBACK=1 npm run build
+```
+
+Verify manually in both `/ro` and `/en`:
+
+- Header, locale switch, gallery, about, legal links, calculator steps, invalid input, WhatsApp URL, and expanded enquiry form.
+- Empty project/testimonial states and approved CMS content states.
+- `/robots.txt`, `/sitemap.xml`, canonical URLs, document language, and project-detail routes.
+- `/admin` with the owner account, without exposing admin/API routes to search.
+
+Do not submit a test enquiry to the real database or notification recipient. Use an isolated database and notification adapter for API verification. Keep the verified commit, migration state, environment configuration, and rollback commit documented before deployment.
+
+Rollback application code and database migrations separately. Redeploying an older commit does not reverse a Payload migration.

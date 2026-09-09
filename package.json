@@ -13,6 +13,7 @@
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test": "npm run test:int",
+    "typecheck": "next typegen && cross-env NODE_OPTIONS=--no-deprecation tsc --noEmit",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
   },
   "dependencies": {
@@ -25,6 +26,7 @@
     "cross-env": "^7.0.3",
     "dotenv": "16.4.7",
     "graphql": "^16.8.1",
+    "motion": "^13.2.0",
     "next": "16.2.6",
     "payload": "3.84.1",
     "react": "19.2.6",

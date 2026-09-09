@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest'
 import {
   calculateEstimate,
   calculateSquareMetersFromDimensions,
+  PricingValidationError,
+  validateEstimateInput,
   type PricingSettings,
 } from '@/lib/pricing'
 
@@ -82,5 +84,10 @@ describe('calculateEstimate', () => {
 
     expect(estimate.subtotalRon).toBe(4400)
     expect(estimate.lineItems.some((item) => item.label === 'Transport / deplasare')).toBe(true)
+  })
+
+  it('rejects invalid areas and unknown pricing options', () => {
+    expect(() => calculateEstimate({ ceilingType: 'mat', city: 'Constanta', complexity: 'simple', lighting: 'none', squareMeters: 0 }, settings)).toThrow(PricingValidationError)
+    expect(() => validateEstimateInput({ ceilingType: 'unknown', city: 'Constanta', complexity: 'simple', lighting: 'none', squareMeters: 20 }, settings)).toThrow(PricingValidationError)
   })
 })
