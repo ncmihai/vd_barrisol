@@ -93,6 +93,8 @@ Last updated: 2026-09-09
 
 ## Next Demo Requirements
 
+- Membrane prototype uses lazy-loaded React Three Fiber/Three.js with Motion progress. Home Page motion preset controls off/stretch; demo mode enables stretch. A full-viewport charcoal sheet carries the original logo, tightens, and lifts bottom-right first through a curved fold over 3.1 seconds. It is mounted in a body portal above the page; Skip/Escape, focus restoration, temporary inert content, scroll restoration and a startup timeout are included. Reduced motion, repeat session visits and hash links skip it. Local preview: port 3031; no CMS or database changes needed. Desktop/mobile lift, Skip, reduced motion, lint and production build verified. Visual review remains pending.
+
 - The owner already created the first Payload admin user; verify access rather than creating another account.
 - Confirm seeded `Site Settings` values: phone, email, WhatsApp, Facebook, Instagram, service cities, `VD BARRISOL S.R.L.`, and `CUI 51496619`.
 - Replace generated/placeholder images with real VD BARRISOL project photos.

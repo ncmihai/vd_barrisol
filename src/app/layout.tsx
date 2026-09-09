@@ -25,7 +25,7 @@ export default async function RootLayout({
   const locale = requestHeaders.get("x-vd-locale") === "en" ? "en" : "ro";
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <body>{children}</body>
     </html>
   );

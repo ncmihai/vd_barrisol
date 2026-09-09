@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { IntroCover } from "@/components/IntroCover";
 import { isLocale, localizedPaths, type Locale } from "@/lib/i18n";
 import { getPublicSiteData } from "@/lib/publicData";
 
@@ -55,6 +56,7 @@ export default async function LocaleLayout({
 
   return (
     <>
+      {data.home.motionPreset === "stretch" && <IntroCover />}
       <a className="skip-link" href="#main-content">
         {locale === "ro" ? "Sari la continut" : "Skip to content"}
       </a>

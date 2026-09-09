@@ -2,14 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import {
-  AnimatePresence,
-  LazyMotion,
-  domAnimation,
-  m,
-  useReducedMotion,
-} from "motion/react";
-import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import { useReducedMotion } from "motion/react";
+import { useCallback, useEffect, useState } from "react";
+
+const HeroMembrane = dynamic(() => import("./HeroMembrane"), { ssr: false });
 
 import type { Locale } from "@/lib/i18n";
 import { routeLabels } from "@/lib/i18n";
@@ -28,6 +25,15 @@ export function HeroCarousel({
   const [isPaused, setIsPaused] = useState(false);
   const [showStretchReveal, setShowStretchReveal] = useState(false);
   const reducedMotion = useReducedMotion();
+  const finishReveal = useCallback(() => {
+    document.documentElement.dataset.vdIntro = "dismissed";
+    setShowStretchReveal(false);
+    try {
+      window.sessionStorage.setItem("vd-barrisol-intro-seen", "1");
+    } catch {
+      /* Storage can be unavailable in private contexts. */
+    }
+  }, []);
   const labels = routeLabels[locale];
   const slides = home.heroSlides.length > 0 ? home.heroSlides : [];
 
@@ -51,6 +57,7 @@ export function HeroCarousel({
       mediaQuery.matches ||
       reducedMotion ||
       home.motionPreset !== "stretch" ||
+      document.documentElement.dataset.vdIntro !== "pending" ||
       window.location.hash
     ) {
       return;
@@ -61,15 +68,11 @@ export function HeroCarousel({
         return;
       }
 
-      window.sessionStorage.setItem("vd-barrisol-intro-seen", "1");
       const revealTimer = window.setTimeout(
         () => setShowStretchReveal(true),
         0,
       );
-      const timeout = window.setTimeout(
-        () => setShowStretchReveal(false),
-        1050,
-      );
+      const timeout = window.setTimeout(finishReveal, 6000);
 
       return () => {
         window.clearTimeout(revealTimer);
@@ -78,7 +81,7 @@ export function HeroCarousel({
     } catch {
       return;
     }
-  }, [home.motionPreset, reducedMotion]);
+  }, [home.motionPreset, reducedMotion, finishReveal]);
 
   if (slides.length === 0) {
     return null;
@@ -108,27 +111,10 @@ export function HeroCarousel({
           ) : null,
         )}
       </div>
+      {showStretchReveal && !reducedMotion && (
+        <HeroMembrane onComplete={finishReveal} locale={locale} />
+      )}
       <div className="hero-overlay" />
-      <LazyMotion features={domAnimation}>
-        <AnimatePresence>
-          {showStretchReveal && (
-            <m.div
-              aria-hidden="true"
-              className="hero-stretch-reveal"
-              initial={{
-                borderRadius: "18% 18% 4% 4%",
-                opacity: 1,
-                scaleY: 0.82,
-              }}
-              animate={{ borderRadius: "0%", opacity: 0, scaleY: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <span />
-            </m.div>
-          )}
-        </AnimatePresence>
-      </LazyMotion>
       <div className="hero-content">
         <p className="eyebrow">{home.heroEyebrow}</p>
         <h1>{home.heroHeadline}</h1>
