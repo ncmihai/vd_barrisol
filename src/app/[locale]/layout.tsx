@@ -62,13 +62,6 @@ export default async function LocaleLayout({
       </a>
       <Header locale={locale} nav={nav} settings={data.settings} />
       <main id="main-content">
-        {data.contentStatus === "demo" && (
-          <p className="demo-notice">
-            {locale === "ro"
-              ? "Demonstratie: imaginile, proiectele si preturile sunt illustrative."
-              : "Demo: images, projects and prices are illustrative."}
-          </p>
-        )}
         {children}
         <noscript
           dangerouslySetInnerHTML={{

@@ -22,7 +22,6 @@ export function HeroCarousel({
   settings: PublicSiteSettings;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
   const [showStretchReveal, setShowStretchReveal] = useState(false);
   const reducedMotion = useReducedMotion();
   const finishReveal = useCallback(() => {
@@ -39,7 +38,7 @@ export function HeroCarousel({
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mediaQuery.matches || reducedMotion || slides.length < 2 || isPaused) {
+    if (mediaQuery.matches || reducedMotion || slides.length < 2) {
       return;
     }
 
@@ -48,7 +47,7 @@ export function HeroCarousel({
     }, 6500);
 
     return () => window.clearInterval(interval);
-  }, [isPaused, slides.length, reducedMotion]);
+  }, [slides.length, reducedMotion]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -154,24 +153,6 @@ export function HeroCarousel({
               type="button"
             />
           ))}
-          {slides.length > 1 && (
-            <button
-              aria-label={
-                isPaused
-                  ? locale === "ro"
-                    ? "Porneste rotirea"
-                    : "Resume rotation"
-                  : locale === "ro"
-                    ? "Opreste rotirea"
-                    : "Pause rotation"
-              }
-              className="hero-dots__pause"
-              onClick={() => setIsPaused((current) => !current)}
-              type="button"
-            >
-              {isPaused ? "▶" : "Ⅱ"}
-            </button>
-          )}
         </div>
       </div>
     </section>

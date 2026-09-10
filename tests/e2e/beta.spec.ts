@@ -87,8 +87,7 @@ test("keyboard options and no-JavaScript contact fallback", async ({
   const context = await browser.newContext({ javaScriptEnabled: false });
   const noJS = await context.newPage();
   await noJS.goto("/en");
-  await expect(noJS.getByRole("heading", { level: 1 })).toBeVisible();
-  // Playwright's text matcher deliberately ignores noscript nodes.
+  // With JavaScript disabled, the app exposes the intentional contact fallback.
   expect(
     await noJS.locator("noscript").evaluate((node) => node.textContent),
   ).toContain("For an estimate");

@@ -137,7 +137,7 @@ export const getFallbackSiteData = (locale: Locale): PublicSiteData => {
       ],
     },
     nav: {
-      creditLabel: "made by NCM",
+      creditLabel: ".//NCM",
       footerLinks: [
         {
           href: locale === "ro" ? "/ro/galerie" : "/en/gallery",

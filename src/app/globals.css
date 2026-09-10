@@ -29,13 +29,6 @@
   outline: 3px solid var(--focus-ring);
   outline-offset: 4px;
 }
-.demo-notice {
-  padding: 0.5rem 1rem;
-  margin: 0;
-  text-align: center;
-  background: #edf1f6;
-  font-size: 0.875rem;
-}
 .services-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
@@ -121,7 +114,8 @@ body {
     "Segoe UI",
     sans-serif;
   margin: 0;
-  min-width: 320px;
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 button,
@@ -279,9 +273,20 @@ button {
   display: block;
 }
 
-.site-membrane { position: fixed; inset: 0; z-index: 10000; background: #353535; }
-.site-membrane.is-ready { background: transparent; }
-.site-membrane__canvas { position: absolute; inset: 0; pointer-events: none; }
+.site-membrane {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: #353535;
+}
+.site-membrane.is-ready {
+  background: transparent;
+}
+.site-membrane__canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
 .site-membrane__skip {
   position: absolute;
   right: max(24px, env(safe-area-inset-right));
@@ -293,7 +298,10 @@ button {
   padding: 12px 18px;
   cursor: pointer;
 }
-.site-membrane__skip:focus-visible { outline: 2px solid #FF7A30; outline-offset: 4px; }
+.site-membrane__skip:focus-visible {
+  outline: 2px solid #ff7a30;
+  outline-offset: 4px;
+}
 
 .hero-overlay {
   background:
@@ -430,17 +438,6 @@ button {
 
 .hero-dots button.is-active {
   background: var(--color-orange);
-}
-
-.hero-dots__pause {
-  align-items: center;
-  background: rgb(0 0 0 / 45%) !important;
-  border: 1px solid rgb(255 255 255 / 38%);
-  color: var(--color-white);
-  display: inline-flex;
-  font-size: 0.65rem;
-  justify-content: center;
-  margin-top: 0.25rem;
 }
 
 .section,
@@ -613,6 +610,9 @@ button {
 .lead-form {
   display: grid;
   gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  max-width: 100%;
 }
 
 .estimate-steps {
@@ -671,7 +671,9 @@ button {
   border-radius: var(--radius);
   display: grid;
   gap: 1.1rem;
+  grid-template-columns: minmax(0, 1fr);
   min-height: 26rem;
+  min-width: 0;
   padding: 1rem;
 }
 
@@ -707,6 +709,8 @@ button {
 .option-grid {
   display: grid;
   gap: 0.75rem;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .dimension-grid {
@@ -781,6 +785,8 @@ button {
   display: grid;
   gap: 0.6rem;
   min-height: 8.8rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
   padding: 1rem;
   text-align: left;
   transition:
@@ -837,6 +843,11 @@ button {
   display: flex;
   gap: 0.65rem;
   justify-content: space-between;
+}
+
+.estimate-navigation .button {
+  min-width: 0;
+  white-space: normal;
 }
 
 .button--ghost-light {
@@ -908,6 +919,8 @@ button {
 
 .estimate-actions .button {
   flex: 1 1 8rem;
+  min-height: 2.75rem;
+  padding: 0.75rem 0.9rem;
 }
 
 .lead-form {
@@ -1250,6 +1263,7 @@ button {
 .site-footer__contact a {
   color: rgb(255 255 255 / 78%);
   font-weight: 800;
+  overflow-wrap: anywhere;
 }
 
 .site-footer__bottom {
@@ -1330,17 +1344,18 @@ button {
   }
 
   .brand-lockup {
-    height: 3.2rem;
-    width: 7.8rem;
+    height: 2.7rem;
+    width: clamp(5.9rem, 28vw, 7.2rem);
   }
 
   .brand-lockup__mark {
-    width: 7.7rem;
+    width: 100%;
   }
 
   .header-menu {
     border-radius: var(--radius);
     justify-content: space-between;
+    min-width: 0;
     padding: 0.25rem;
   }
 
@@ -1356,12 +1371,12 @@ button {
   .site-nav a,
   .locale-link,
   .header-whatsapp {
-    font-size: 0.86rem;
-    padding: 0.68rem 0.72rem;
+    font-size: clamp(0.68rem, 3.4vw, 0.82rem);
+    padding: 0.62rem clamp(0.42rem, 2vw, 0.68rem);
   }
 
   .header-whatsapp {
-    min-width: 6.9rem;
+    min-width: 0;
   }
 
   .hero-shell {
@@ -1422,19 +1437,43 @@ button {
     grid-template-columns: 1fr;
   }
 
+  .estimate-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .estimate-step-panel {
     min-height: auto;
     padding: 0.85rem;
   }
 
   .estimate-steps button {
-    justify-content: flex-start;
+    justify-content: center;
+    min-width: 0;
+    padding-inline: 0.35rem;
+  }
+
+  .estimate-step-intro h3 {
+    font-size: 1.5rem;
+  }
+
+  .estimate-step-intro p,
+  .estimate-result p {
+    font-size: 0.95rem;
   }
 
   .estimate-navigation,
   .estimate-actions {
     align-items: stretch;
-    flex-direction: column;
+  }
+
+  .estimate-actions {
+    flex-direction: row;
+  }
+
+  .estimate-actions .button {
+    flex: 1 1 0;
+    min-width: 0;
+    white-space: normal;
   }
 
   .trust-strip {
@@ -1450,12 +1489,73 @@ button {
   }
 
   .estimate-result strong {
-    font-size: 1.6rem;
+    font-size: 1.35rem;
   }
 
   .site-footer__bottom {
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  .site-footer {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .site-footer__brand,
+  .site-footer__bottom {
+    grid-column: 1 / -1;
+  }
+
+  .site-footer__column {
+    align-content: start;
+  }
+}
+
+@media (max-width: 360px) {
+  .site-header {
+    padding-inline: 0.65rem;
+  }
+  .header-menu,
+  .site-nav,
+  .header-actions {
+    gap: 0;
+  }
+  .site-nav a,
+  .locale-link,
+  .header-whatsapp {
+    font-size: 0.65rem;
+    padding-inline: 0.38rem;
+  }
+  .hero-content h1,
+  .page-hero h1,
+  .intro-grid h2,
+  .coverage-grid h2,
+  .section-heading h2,
+  .contact-grid h2,
+  .about-hero-grid h1 {
+    font-size: 2rem;
+  }
+  .hero-content {
+    gap: 0.7rem;
+    padding-inline: 1rem;
+  }
+  .hero-content > p:not(.eyebrow) {
+    font-size: 0.98rem;
+  }
+  .hero-actions .button {
+    min-height: 2.65rem;
+    padding: 0.75rem 0.8rem;
+  }
+  .site-footer {
+    gap: 1.5rem;
+    padding: 2.25rem 1rem;
+  }
+  .site-footer__brand p {
+    font-size: 0.92rem;
+  }
+  .site-footer__links a,
+  .site-footer__contact a {
+    font-size: 0.95rem;
   }
 }
 
